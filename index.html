@@ -23,12 +23,90 @@
             padding-bottom: 80px;
         }
 
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #6b7280;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #f1f5f9;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 24px;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
         .header {
             background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
             color: white;
             padding: 20px;
             text-align: center;
             box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);
+            position: relative;
         }
 
         .header h1 {
@@ -40,6 +118,24 @@
         .cycle-info {
             font-size: 16px;
             opacity: 0.9;
+        }
+
+        .reset-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .main-content {
@@ -140,6 +236,39 @@
             gap: 8px;
         }
 
+        .calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .nav-arrow {
+            background: #ec4899;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover {
+            background: #d946ef;
+            transform: scale(1.1);
+        }
+
+        .month-year {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
         .input-group {
             margin-bottom: 20px;
         }
@@ -191,12 +320,14 @@
             color: #ec4899;
             border: 2px solid #ec4899;
             border-radius: 12px;
-            padding: 12px 20px;
-            font-size: 14px;
+            padding: 12px 16px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            margin: 8px 4px;
+            margin: 4px;
             transition: all 0.3s ease;
+            flex: 1;
+            min-width: 0;
         }
 
         .btn-secondary:hover, .btn-secondary.active {
@@ -205,9 +336,43 @@
         }
 
         .protection-buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
-            flex-wrap: wrap;
+        }
+
+        .risk-indicator {
+            background: linear-gradient(135deg, #fef3f2 0%, #fef7f7 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .risk-high {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #fecaca;
+        }
+
+        .risk-medium {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #fed7aa;
+        }
+
+        .risk-low {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #bbf7d0;
+        }
+
+        .risk-percentage {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .risk-text {
+            font-size: 14px;
+            color: #6b7280;
         }
 
         .modal {
@@ -293,7 +458,12 @@
         }
 
         .calendar-day.activity {
-            border: 2px solid #8b5cf6;
+            border: 3px solid #8b5cf6;
+        }
+
+        .calendar-day.predicted-period {
+            background: #fca5a5;
+            color: #dc2626;
         }
 
         .calendar-header {
@@ -363,6 +533,53 @@
             font-size: 14px;
         }
 
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+        }
+
+        .confirm-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
         @media (max-width: 480px) {
             .main-content {
                 padding: 16px;
@@ -375,134 +592,181 @@
             .modal {
                 padding: 10px;
             }
+
+            .protection-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🌙 Luna Tracker</h1>
-        <div class="cycle-info" id="cycleInfo">Track your cycle & fertility</div>
-    </div>
-
-    <div class="main-content">
-        <!-- Home Tab -->
-        <div id="homeTab" class="tab-content">
-            <div class="card status-card">
-                <div class="phase-indicator" id="phaseIndicator">🌸</div>
-                <div class="phase-name" id="phaseName">Welcome</div>
-                <div class="phase-description" id="phaseDescription">Start tracking your cycle</div>
-            </div>
-
-            <div class="quick-actions">
-                <div class="action-btn" onclick="openModal('periodModal')">
-                    <div class="action-icon">🩸</div>
-                    <div class="action-text">Log Period</div>
-                </div>
-                <div class="action-btn" onclick="openModal('activityModal')">
-                    <div class="action-icon">💕</div>
-                    <div class="action-text">Log Activity</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="section-title">📊 This Month</div>
-                <div class="calendar" id="calendar"></div>
-            </div>
-        </div>
-
-        <!-- Calendar Tab -->
-        <div id="calendarTab" class="tab-content hidden">
-            <div class="card">
-                <div class="section-title">📅 Full Calendar</div>
-                <div class="calendar" id="fullCalendar"></div>
-            </div>
-            
-            <div class="card">
-                <div class="section-title">🔍 Legend</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
-                    <div>🩸 Period Days</div>
-                    <div>🥚 Ovulation</div>
-                    <div>🌱 Fertile Window</div>
-                    <div>💜 Activity</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- History Tab -->
-        <div id="historyTab" class="tab-content hidden">
-            <div class="card">
-                <div class="section-title">📋 Recent Activity</div>
-                <div id="historyList"></div>
-            </div>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1 class="login-title">🌙 Luna Tracker</h1>
+            <p class="login-subtitle">Enter your password to access</p>
+            <input type="password" id="passwordInput" class="login-input" placeholder="Enter password">
+            <button onclick="checkPassword()" class="login-btn">Enter</button>
+            <div id="loginError" class="error-message hidden">Incorrect password. Please try again.</div>
         </div>
     </div>
 
-    <!-- Period Modal -->
-    <div id="periodModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Log Period</h2>
-                <button class="close-btn" onclick="closeModal('periodModal')">&times;</button>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Date</label>
-                <input type="date" class="input-field" id="periodDate">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Flow Level</label>
-                <div class="protection-buttons">
-                    <button class="btn-secondary flow-btn" data-flow="light">Light</button>
-                    <button class="btn-secondary flow-btn" data-flow="medium">Medium</button>
-                    <button class="btn-secondary flow-btn" data-flow="heavy">Heavy</button>
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="header">
+            <button class="reset-btn" onclick="showResetConfirm()">Reset Data</button>
+            <h1>🌙 Luna Tracker</h1>
+            <div class="cycle-info" id="cycleInfo">Track your cycle & fertility</div>
+        </div>
+
+        <div class="main-content">
+            <!-- Home Tab -->
+            <div id="homeTab" class="tab-content">
+                <div class="card status-card">
+                    <div class="phase-indicator" id="phaseIndicator">🌸</div>
+                    <div class="phase-name" id="phaseName">Welcome</div>
+                    <div class="phase-description" id="phaseDescription">Start tracking your cycle</div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-btn" onclick="openModal('periodModal')">
+                        <div class="action-icon">🩸</div>
+                        <div class="action-text">Log Period</div>
+                    </div>
+                    <div class="action-btn" onclick="openModal('activityModal')">
+                        <div class="action-icon">💕</div>
+                        <div class="action-text">Log Activity</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="calendar-navigation">
+                        <button class="nav-arrow" onclick="changeMonth(-1)">‹</button>
+                        <div class="month-year" id="currentMonthYear"></div>
+                        <button class="nav-arrow" onclick="changeMonth(1)">›</button>
+                    </div>
+                    <div class="calendar" id="calendar"></div>
                 </div>
             </div>
-            <div class="input-group">
-                <label class="input-label">Notes (optional)</label>
-                <input type="text" class="input-field" id="periodNotes" placeholder="Any symptoms or notes...">
+
+            <!-- Calendar Tab -->
+            <div id="calendarTab" class="tab-content hidden">
+                <div class="card">
+                    <div class="calendar-navigation">
+                        <button class="nav-arrow" onclick="changeFullMonth(-1)">‹</button>
+                        <div class="month-year" id="fullMonthYear"></div>
+                        <button class="nav-arrow" onclick="changeFullMonth(1)">›</button>
+                    </div>
+                    <div class="calendar" id="fullCalendar"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="section-title">🔍 Legend</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
+                        <div>🩸 Period Days</div>
+                        <div>🥚 Ovulation</div>
+                        <div>🌱 Fertile Window</div>
+                        <div>💜 Activity</div>
+                        <div>📅 Predicted Period</div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
-            <button class="btn-primary" onclick="savePeriod()">Save Period Entry</button>
+
+            <!-- History Tab -->
+            <div id="historyTab" class="tab-content hidden">
+                <div class="card">
+                    <div class="section-title">📋 Recent Activity</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Period Modal -->
+        <div id="periodModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Log Period</h2>
+                    <button class="close-btn" onclick="closeModal('periodModal')">&times;</button>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Date</label>
+                    <input type="date" class="input-field" id="periodDate">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Flow Level</label>
+                    <div class="protection-buttons">
+                        <button class="btn-secondary flow-btn" data-flow="light">Light</button>
+                        <button class="btn-secondary flow-btn" data-flow="medium">Medium</button>
+                        <button class="btn-secondary flow-btn" data-flow="heavy">Heavy</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Notes (optional)</label>
+                    <input type="text" class="input-field" id="periodNotes" placeholder="Any symptoms or notes...">
+                </div>
+                <button class="btn-primary" onclick="savePeriod()">Save Period Entry</button>
+            </div>
+        </div>
+
+        <!-- Activity Modal -->
+        <div id="activityModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Log Activity</h2>
+                    <button class="close-btn" onclick="closeModal('activityModal')">&times;</button>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Date & Time</label>
+                    <input type="datetime-local" class="input-field" id="activityDateTime">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Activity Type</label>
+                    <div class="protection-buttons">
+                        <button class="btn-secondary protection-btn" data-protection="cum_inside">💦 Cum Inside</button>
+                        <button class="btn-secondary protection-btn" data-protection="condom">🛡️ Condom</button>
+                        <button class="btn-secondary protection-btn" data-protection="no_condom">🚫 No Condom</button>
+                        <button class="btn-secondary protection-btn" data-protection="no_cum">❌ Didn't Cum</button>
+                    </div>
+                </div>
+                <div id="riskAssessment" class="risk-indicator hidden">
+                    <div class="risk-percentage" id="riskPercentage">0%</div>
+                    <div class="risk-text" id="riskText">Pregnancy Risk</div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Notes (optional)</label>
+                    <input type="text" class="input-field" id="activityNotes" placeholder="Any additional notes...">
+                </div>
+                <button class="btn-primary" onclick="saveActivity()">Save Activity</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('home')">
+                <div class="nav-tab-icon">🏠</div>
+                <div class="nav-tab-text">Home</div>
+            </div>
+            <div class="nav-tab" onclick="switchTab('calendar')">
+                <div class="nav-tab-icon">📅</div>
+                <div class="nav-tab-text">Calendar</div>
+            </div>
+            <div class="nav-tab" onclick="switchTab('history')">
+                <div class="nav-tab-icon">📋</div>
+                <div class="nav-tab-text">History</div>
+            </div>
         </div>
     </div>
 
-    <!-- Activity Modal -->
-    <div id="activityModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Log Activity</h2>
-                <button class="close-btn" onclick="closeModal('activityModal')">&times;</button>
+    <!-- Reset Confirmation -->
+    <div id="resetConfirm" class="confirm-dialog hidden">
+        <div class="confirm-content">
+            <h3>⚠️ Reset All Data</h3>
+            <p>This will permanently delete all your period and activity data. This action cannot be undone.</p>
+            <div class="confirm-buttons">
+                <button class="btn-cancel" onclick="hideResetConfirm()">Cancel</button>
+                <button class="btn-danger" onclick="resetAllData()">Reset</button>
             </div>
-            <div class="input-group">
-                <label class="input-label">Date & Time</label>
-                <input type="datetime-local" class="input-field" id="activityDateTime">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Protection Method</label>
-                <div class="protection-buttons">
-                    <button class="btn-secondary protection-btn" data-protection="condom">🛡️ Condom</button>
-                    <button class="btn-secondary protection-btn" data-protection="none">💦 No Protection</button>
-                </div>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Notes (optional)</label>
-                <input type="text" class="input-field" id="activityNotes" placeholder="Any additional notes...">
-            </div>
-            <button class="btn-primary" onclick="saveActivity()">Save Activity</button>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <div class="nav-tabs">
-        <div class="nav-tab active" onclick="switchTab('home')">
-            <div class="nav-tab-icon">🏠</div>
-            <div class="nav-tab-text">Home</div>
-        </div>
-        <div class="nav-tab" onclick="switchTab('calendar')">
-            <div class="nav-tab-icon">📅</div>
-            <div class="nav-tab-text">Calendar</div>
-        </div>
-        <div class="nav-tab" onclick="switchTab('history')">
-            <div class="nav-tab-icon">📋</div>
-            <div class="nav-tab-text">History</div>
         </div>
     </div>
 
@@ -512,19 +776,60 @@
         let activityData = JSON.parse(localStorage.getItem('activityData') || '[]');
         let cycleLength = parseInt(localStorage.getItem('cycleLength') || '28');
         let periodLength = parseInt(localStorage.getItem('periodLength') || '5');
+        
+        // Calendar navigation
+        let currentCalendarDate = new Date();
+        let fullCalendarDate = new Date();
+
+        // Password
+        const APP_PASSWORD = 'luna123'; // Change this to your desired password
+
+        // Login functionality
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === APP_PASSWORD) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                initializeApp();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Allow Enter key to login
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
 
         // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
+        function initializeApp() {
             setDefaultDates();
             updateUI();
             renderCalendar();
+            renderFullCalendar();
             updateHistory();
-        });
+        }
 
         function setDefaultDates() {
             const now = new Date();
             document.getElementById('periodDate').value = now.toISOString().split('T')[0];
             document.getElementById('activityDateTime').value = now.toISOString().slice(0, 16);
+        }
+
+        // Calendar navigation
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function changeFullMonth(direction) {
+            fullCalendarDate.setMonth(fullCalendarDate.getMonth() + direction);
+            renderFullCalendar();
         }
 
         // Tab switching
@@ -546,279 +851,4 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            resetForms();
-        }
-
-        function resetForms() {
-            document.querySelectorAll('.btn-secondary').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
-        }
-
-        // Button selection
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('flow-btn')) {
-                document.querySelectorAll('.flow-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-            if (e.target.classList.contains('protection-btn')) {
-                document.querySelectorAll('.protection-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-        });
-
-        // Save period data
-        function savePeriod() {
-            const date = document.getElementById('periodDate').value;
-            const flow = document.querySelector('.flow-btn.active')?.dataset.flow || 'medium';
-            const notes = document.getElementById('periodNotes').value;
-
-            if (!date) {
-                alert('Please select a date');
-                return;
-            }
-
-            const entry = {
-                id: Date.now(),
-                date: date,
-                type: 'period',
-                flow: flow,
-                notes: notes
-            };
-
-            periodData.push(entry);
-            periodData.sort((a, b) => new Date(a.date) - new Date(b.date));
-            localStorage.setItem('periodData', JSON.stringify(periodData));
-
-            closeModal('periodModal');
-            updateUI();
-            renderCalendar();
-            updateHistory();
-        }
-
-        // Save activity data
-        function saveActivity() {
-            const datetime = document.getElementById('activityDateTime').value;
-            const protection = document.querySelector('.protection-btn.active')?.dataset.protection;
-            const notes = document.getElementById('activityNotes').value;
-
-            if (!datetime || !protection) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            const entry = {
-                id: Date.now(),
-                datetime: datetime,
-                type: 'activity',
-                protection: protection,
-                notes: notes
-            };
-
-            activityData.push(entry);
-            activityData.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-            localStorage.setItem('activityData', JSON.stringify(activityData));
-
-            closeModal('activityModal');
-            updateUI();
-            renderCalendar();
-            updateHistory();
-        }
-
-        // Calculate cycle phase
-        function getCurrentPhase() {
-            if (periodData.length === 0) {
-                return { phase: 'unknown', day: 0, description: 'Start logging your periods to see predictions' };
-            }
-
-            const lastPeriod = new Date(periodData[periodData.length - 1].date);
-            const today = new Date();
-            const daysSinceLastPeriod = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
-
-            let phase, description;
-            
-            if (daysSinceLastPeriod <= periodLength) {
-                phase = 'menstrual';
-                description = 'Your period is happening. Track your flow and symptoms.';
-            } else if (daysSinceLastPeriod <= 13) {
-                phase = 'follicular';
-                description = 'Follicular phase. Your body is preparing for ovulation.';
-            } else if (daysSinceLastPeriod >= 12 && daysSinceLastPeriod <= 16) {
-                phase = 'ovulation';
-                description = 'Ovulation window. You are most fertile right now.';
-            } else {
-                phase = 'luteal';
-                description = 'Luteal phase. Your next period is approaching.';
-            }
-
-            return { phase, day: daysSinceLastPeriod, description };
-        }
-
-        // Update UI
-        function updateUI() {
-            const currentPhase = getCurrentPhase();
-            const indicator = document.getElementById('phaseIndicator');
-            const name = document.getElementById('phaseName');
-            const desc = document.getElementById('phaseDescription');
-            const cycleInfo = document.getElementById('cycleInfo');
-
-            const phaseConfig = {
-                menstrual: { icon: '🩸', name: 'Menstrual', class: 'menstrual' },
-                follicular: { icon: '🌱', name: 'Follicular', class: 'follicular' },
-                ovulation: { icon: '🥚', name: 'Ovulation', class: 'ovulation' },
-                luteal: { icon: '🌙', name: 'Luteal', class: 'luteal' },
-                unknown: { icon: '🌸', name: 'Welcome', class: 'follicular' }
-            };
-
-            const config = phaseConfig[currentPhase.phase];
-            indicator.textContent = config.icon;
-            indicator.className = `phase-indicator ${config.class}`;
-            name.textContent = config.name;
-            desc.textContent = currentPhase.description;
-
-            if (currentPhase.phase !== 'unknown') {
-                cycleInfo.textContent = `Day ${currentPhase.day} of cycle`;
-            } else {
-                cycleInfo.textContent = 'Track your cycle & fertility';
-            }
-        }
-
-        // Calendar rendering
-        function renderCalendar() {
-            const calendar = document.getElementById('calendar');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-
-            renderCalendarMonth(calendar, year, month);
-        }
-
-        function renderFullCalendar() {
-            const calendar = document.getElementById('fullCalendar');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-
-            renderCalendarMonth(calendar, year, month);
-        }
-
-        function renderCalendarMonth(container, year, month) {
-            container.innerHTML = '';
-            
-            // Add day headers
-            const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-            dayHeaders.forEach(day => {
-                const header = document.createElement('div');
-                header.className = 'calendar-header';
-                header.textContent = day;
-                container.appendChild(header);
-            });
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startDate = new Date(firstDay);
-            startDate.setDate(startDate.getDate() - firstDay.getDay());
-
-            for (let i = 0; i < 42; i++) {
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                dayElement.textContent = date.getDate();
-
-                if (date.getMonth() !== month) {
-                    dayElement.style.opacity = '0.3';
-                }
-
-                // Add period days
-                const dateStr = date.toISOString().split('T')[0];
-                const periodEntry = periodData.find(p => p.date === dateStr);
-                if (periodEntry) {
-                    dayElement.classList.add('period');
-                }
-
-                // Add activity days
-                const activityEntry = activityData.find(a => a.datetime.split('T')[0] === dateStr);
-                if (activityEntry) {
-                    dayElement.classList.add('activity');
-                }
-
-                // Add ovulation and fertile window
-                if (periodData.length > 0) {
-                    const lastPeriod = new Date(periodData[periodData.length - 1].date);
-                    const daysSinceLastPeriod = Math.floor((date - lastPeriod) / (1000 * 60 * 60 * 24));
-                    
-                    if (daysSinceLastPeriod === 14) {
-                        dayElement.classList.add('ovulation');
-                    } else if (daysSinceLastPeriod >= 10 && daysSinceLastPeriod <= 17) {
-                        dayElement.classList.add('fertile');
-                    }
-                }
-
-                container.appendChild(dayElement);
-            }
-        }
-
-        // Update history
-        function updateHistory() {
-            const historyList = document.getElementById('historyList');
-            const allEntries = [
-                ...periodData.map(p => ({...p, displayDate: p.date})),
-                ...activityData.map(a => ({...a, displayDate: a.datetime.split('T')[0]}))
-            ].sort((a, b) => new Date(b.displayDate) - new Date(a.displayDate));
-
-            if (allEntries.length === 0) {
-                historyList.innerHTML = '<p style="text-align: center; color: #6b7280;">No entries yet. Start tracking!</p>';
-                return;
-            }
-
-            historyList.innerHTML = allEntries.slice(0, 10).map(entry => {
-                const date = new Date(entry.displayDate).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-
-                let details = '';
-                if (entry.type === 'period') {
-                    details = `🩸 Period - ${entry.flow} flow`;
-                    if (entry.notes) details += ` - ${entry.notes}`;
-                } else {
-                    const protection = entry.protection === 'condom' ? '🛡️ Protected' : '💦 Unprotected';
-                    details = `💕 Activity - ${protection}`;
-                    if (entry.notes) details += ` - ${entry.notes}`;
-                }
-
-                return `
-                    <div class="history-item">
-                        <div class="history-date">${date}</div>
-                        <div class="history-details">${details}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-                resetForms();
-            }
-        }
-
-        // Service Worker Registration for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZXZlbnQpIHsKICBjb25zb2xlLmxvZygnU2VydmljZSBXb3JrZXIgaW5zdGFsbGVkJyk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGZ1bmN0aW9uKGV2ZW50KSB7CiAgZXZlbnQucmVzcG9uZFdpdGgoZmV0Y2goZXZlbnQucmVxdWVzdCkpOwp9KTs=')
-                .then(function(registration) {
-                    console.log('ServiceWorker registered');
-                }).catch(function(error) {
-                    console.log('ServiceWorker registration failed');
-                });
-            });
-        }
-    </script>
-</body>
-</html>
+            document.getElementById(modalId).style.display = 

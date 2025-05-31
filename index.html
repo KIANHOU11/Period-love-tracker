@@ -1,58 +1,277 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>姨妈与爱爱记录</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #ffafcc, #a2d2ff);
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .login-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .moon {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #fff 30%, #ffafcc 70%);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>姨妈与爱爱记录</title>
+
+  <!-- 图标和 App 支持 -->
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="姨妈记录">
+
+  <style>
+    :root {
+      --primary: #cc3366;
+      --bg: #fff4f8;
+      --card-bg: #ffffffcc;
+      --border: #ffccd5;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', sans-serif;
+      background: linear-gradient(145deg, var(--bg), #ffeef1);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #login, #content {
+      background-color: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    input[type="password"], input[type="date"], select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 16px;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .result {
+      background: #fef0f5;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-box">
-        <div class="moon"></div>
-        <h1 class="text-2xl font-bold">姨妈与爱爱记录</h1>
-        <input type="password" id="password" placeholder="请输入密码" class="border p-2 mt-2 rounded">
-        <button onclick="checkPassword()" class="bg-pink-500 text-white p-2 mt-2 rounded">进入</button>
-    </div>
 
-    <script>
-        function checkPassword() {
-            const password = document.getElementById("password").value;
-            if (password === "1234") { // 简单密码，建议修改
-                window.location.href = "dashboard.html";
-            } else {
-                alert("密码错误！请重试。");
-            }
-        }
-    </script>
+<div id="login">
+  <h1>🩸 姨妈与爱爱记录</h1>
+  <h2>请输入密码</h2>
+  <input type="password" id="passwordInput" placeholder="请输入访问密码" />
+  <button onclick="checkPassword()">进入</button>
+  <div id="error"></div>
+</div>
+
+<div id="content" style="display: none;">
+  <h1>姨妈与爱爱记录</h1>
+
+  <div class="section">
+    <h2>🩸 月经记录</h2>
+    <label>开始日期：<input type="date" id="periodStart"></label>
+    <label>结束日期：<input type="date" id="periodEnd"></label>
+    <button onclick="addPeriod()">添加记录</button>
+    <div id="nextPeriod" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>🍑 爱爱记录</h2>
+    <label>是否戴套：
+      <select id="withCondom">
+        <option value="是">是</option>
+        <option value="否">否</option>
+      </select>
+    </label>
+    <label>射精方式：
+      <select id="ejaculation">
+        <option value="内射">内射</option>
+        <option value="体外">体外</option>
+        <option value="无射">无射</option>
+      </select>
+    </label>
+    <button onclick="recordLove()">添加爱爱记录</button>
+    <div id="loveStats" class="result"></div>
+  </div>
+</div>
+
+<script>
+  const correctPassword = "1234";
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("content").style.display = "block";
+      showNextPeriod();
+      showLoveStats();
+    } else {
+      document.getElementById("error").textContent = "密码错误，请重试";
+    }
+  }
+
+  const periods = JSON.parse(localStorage.getItem("periods") || "[]");
+  const loves = JSON.parse(localStorage.getItem("loves") || "[]");
+
+  function addPeriod() {
+    const start = new Date(document.getElementById("periodStart").value);
+    const end = new Date(document.getElementById("periodEnd").value);
+    if (!start || !end || end <= start) {
+      alert("请输入有效的起止日期！");
+      return;
+    }
+    periods.push({ start, end });
+    localStorage.setItem("periods", JSON.stringify(periods));
+    showNextPeriod();
+  }
+
+  function recordLove() {
+    const today = new Date().toISOString().slice(0, 10);
+    const withCondom = document.getElementById("withCondom").value;
+    const ejaculation = document.getElementById("ejaculation").value;
+    loves.push({ date: today, withCondom, ejaculation });
+    localStorage.setItem("loves", JSON.stringify(loves));
+    showLoveStats();
+  }
+
+  function showLoveStats() {
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    const monthly = loves.filter(l => l.date.startsWith(thisMonth));
+    const total = monthly.length;
+    const inner = monthly.filter(l => l.ejaculation === "内射").length;
+    const outer = monthly.filter(l => l.ejaculation === "体外").length;
+    const noEjac = monthly.filter(l => l.ejaculation === "无射").length;
+    const withCondom = monthly.filter(l => l.withCondom === "是").length;
+    const withoutCondom = monthly.filter(l => l.withCondom === "否").length;
+
+    document.getElementById("loveStats").innerHTML = `
+      本月总次数：${total}<br>
+      - 戴套：${withCondom} 次<br>
+      - 不戴套：${withoutCondom} 次<br>
+      - 内射：${inner} 次<br>
+      - 体外：${outer} 次<br>
+      - 无射：${noEjac} 次
+    `;
+  }
+
+  function showNextPeriod() {
+    if (periods.length === 0) {
+      document.getElementById("nextPeriod").textContent = "暂无月经记录";
+      return;
+    }
+    const last = periods[periods.length - 1];
+    const start = new Date(last.start);
+    const end = new Date(last.end);
+    const duration = (end - start) / (1000 * 3600 * 24);
+    const next = new Date(start.getTime() + (28 + duration) * 24 * 3600 * 1000);
+    document.getElementById("nextPeriod").textContent = `预计下次月经：${next.toISOString().slice(0,10)}`;
+  }
+</script>
+
+
+
+<div id="history" style="display: none; max-width: 360px; width: 90%; margin: 40px auto; font-size: 14px;">
+  <h2 style="text-align:center;">📅 本月记录</h2>
+  <div id="monthlyStats" class="result" style="font-size: 14px;"></div>
+</div>
+
+<script>
+  function isDateInRange(dateStr, start, end) {
+    const date = new Date(dateStr);
+    return date >= new Date(start) && date <= new Date(end);
+  }
+
+  function getOvulationWindow(startDate) {
+    const ovulationDay = new Date(startDate);
+    ovulationDay.setDate(ovulationDay.getDate() + 14);
+    const fertileStart = new Date(ovulationDay);
+    fertileStart.setDate(fertileStart.getDate() - 4);
+    const fertileEnd = new Date(ovulationDay);
+    fertileEnd.setDate(fertileEnd.getDate() + 1);
+    return [fertileStart.toISOString().slice(0, 10), fertileEnd.toISOString().slice(0, 10)];
+  }
+
+  function showMonthlyStats() {
+    document.getElementById("history").style.display = "block";
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    let html = "";
+
+    const monthLoves = loves.filter(l => l.date.startsWith(thisMonth));
+    const monthPeriods = periods.filter(p => {
+      const s = new Date(p.start);
+      return s.toISOString().slice(0, 7) === thisMonth;
+    });
+
+    html += `<strong>🩸 月经记录：</strong><br>`;
+    monthPeriods.forEach((p, i) => {
+      const start = new Date(p.start).toISOString().slice(0, 10);
+      const end = new Date(p.end).toISOString().slice(0, 10);
+      const [fertileStart, fertileEnd] = getOvulationWindow(start);
+      html += `第 ${i+1} 次：${start} 到 ${end}<br>`;
+      html += `⚠️ 排卵期：${fertileStart} 到 ${fertileEnd}<br><br>`;
+    });
+
+    html += `<strong>🍑 爱爱记录：</strong><br>`;
+    monthLoves.forEach((l, i) => {
+      const danger = periods.some(p => {
+        const [f1, f2] = getOvulationWindow(p.start);
+        return isDateInRange(l.date, f1, f2);
+      });
+      html += `第 ${i+1} 次：${l.date} - ${l.withCondom} / ${l.ejaculation}`;
+      if (danger && l.withCondom === "否" && l.ejaculation === "内射") {
+        html += ` <span style="color:red;">⚠️高危</span>`;
+      }
+      html += `<br>`;
+    });
+
+    document.getElementById("monthlyStats").innerHTML = html;
+  }
+
+  // 在密码验证后也显示历史
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("content").style.display = "block";
+      showNextPeriod();
+      showLoveStats();
+      showMonthlyStats();
+    } else {
+      document.getElementById("error").textContent = "密码错误，请重试";
+    }
+  }
+</script>
+
 </body>
 </html>

@@ -4,17 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>姨妈与爱爱记录</title>
-  <link rel="icon" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
+  <title>周期守护助手</title>
+  <link rel="icon" href="https://img.icons8.com/emoji/48/heart-suit.png" />
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="姨妈记录">
+  <meta name="apple-mobile-web-app-title" content="周期守护助手">
 
   <style>
     :root {
-      --primary: #e75480;
+      --primary: #d84e72;
       --bg: #fff0f5;
-      --card-bg: #ffffffcc;
+      --card-bg: rgba(255, 255, 255, 0.9);
       --border: #ffc1cc;
       --danger: #ff6b81;
       --safe: #a3d9a5;
@@ -23,7 +22,7 @@
     body {
       margin: 0;
       font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: linear-gradient(145deg, #ffe0ec, #fef6f9);
+      background: radial-gradient(circle at 30% 30%, #ffe0ec, #fef6f9);
       overflow-x: hidden;
       min-height: 100vh;
     }
@@ -33,26 +32,22 @@
       bottom: -100px;
       width: 20px;
       height: 20px;
-      background: rgba(255, 182, 193, 0.5);
+      background: rgba(255, 182, 193, 0.4);
       border-radius: 50%;
       animation: float 12s infinite ease-in;
     }
 
     @keyframes float {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-120vh) scale(1.5);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
     }
 
     h1 {
       text-align: center;
       color: var(--primary);
+      font-size: 24px;
       animation: pulse 2s infinite;
+      margin-bottom: 12px;
     }
 
     @keyframes pulse {
@@ -64,20 +59,22 @@
       background-color: var(--card-bg);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 30px 20px;
       width: 90%;
-      max-width: 380px;
-      margin: 50px auto;
+      max-width: 400px;
+      margin: 60px auto;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
     }
 
     input, select, button {
       font-size: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 12px;
-      margin-top: 10px;
+      margin-top: 12px;
       width: 100%;
+      border: 1px solid #ddd;
     }
 
     button {
@@ -89,7 +86,12 @@
     }
 
     button:hover {
-      background: #d7446f;
+      background: #c03b64;
+    }
+
+    .reset {
+      background: #999;
+      margin-top: 10px;
     }
 
     .result {
@@ -97,8 +99,9 @@
       border-left: 5px solid var(--primary);
       padding: 12px;
       margin-top: 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 500;
+      text-align: left;
     }
 
     .tag {
@@ -112,13 +115,19 @@
 
     .danger { background: var(--danger); }
     .safe { background: var(--safe); color: #2d5934; }
+
+    .small {
+      font-size: 13px;
+      margin-top: 6px;
+      color: #777;
+    }
   </style>
 </head>
 <body>
 
-<!-- 动画气泡 -->
+<!-- 气泡动画 -->
 <script>
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 15; i++) {
     const b = document.createElement("div");
     b.classList.add("bubble");
     b.style.left = Math.random() * 100 + "vw";
@@ -129,43 +138,42 @@
 </script>
 
 <div id="login">
-  <h1>🩸 姨妈与爱爱记录</h1>
+  <img src="https://img.icons8.com/emoji/48/heart-suit.png" width="40" style="margin-bottom: 12px;" />
+  <h1>周期守护助手</h1>
+  <div class="small">你的私密健康记录空间</div>
   <input type="password" id="passwordInput" placeholder="请输入访问密码" />
   <button onclick="checkPassword()">进入</button>
-  <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>
+  <div id="error" style="color:red; margin-top:10px;"></div>
 </div>
 
 <div id="content" style="display:none;">
-  <h1>周期记录中心</h1>
+  <h1>欢迎回来 💗</h1>
 
-  <div class="section">
-    <h2>🩸 月经记录</h2>
-    <label>开始日期：<input type="date" id="periodStart"></label>
-    <label>结束日期：<input type="date" id="periodEnd"></label>
+  <div>
+    <h3>🩸 月经记录</h3>
+    <input type="date" id="periodStart" placeholder="开始日期">
+    <input type="date" id="periodEnd" placeholder="结束日期">
     <button onclick="addPeriod()">添加记录</button>
     <div id="nextPeriod" class="result"></div>
   </div>
 
-  <div class="section">
-    <h2>🍑 爱爱记录</h2>
-    <label>是否戴套：
-      <select id="withCondom">
-        <option value="是">是</option>
-        <option value="否">否</option>
-      </select>
-    </label>
-    <label>射精方式：
-      <select id="ejaculation">
-        <option value="内射">内射</option>
-        <option value="体外">体外</option>
-        <option value="无射">无射</option>
-      </select>
-    </label>
+  <div>
+    <h3>🍑 爱爱记录</h3>
+    <select id="withCondom">
+      <option value="是">戴套</option>
+      <option value="否">不戴套</option>
+    </select>
+    <select id="ejaculation">
+      <option value="内射">内射</option>
+      <option value="体外">体外</option>
+      <option value="无射">无射</option>
+    </select>
     <button onclick="recordLove()">添加爱爱记录</button>
     <div id="loveStats" class="result"></div>
   </div>
 
-  <div id="monthlyStats" class="result" style="margin-top:30px;"></div>
+  <div id="monthlyStats" class="result" style="margin-top:20px;"></div>
+  <button class="reset" onclick="resetAll()">重置所有记录</button>
 </div>
 
 <script>
@@ -207,6 +215,14 @@
     localStorage.setItem("loves", JSON.stringify(loves));
     showLoveStats();
     showMonthlyStats();
+  }
+
+  function resetAll() {
+    if (confirm("确定要清除所有记录？此操作不可恢复")) {
+      localStorage.removeItem("periods");
+      localStorage.removeItem("loves");
+      location.reload();
+    }
   }
 
   function showNextPeriod() {

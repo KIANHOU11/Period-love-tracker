@@ -1,829 +1,257 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luna Tracker</title>
-    <meta name="theme-color" content="#ec4899">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Luna Tracker">
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTHVuYSBUcmFja2VyIiwic2hvcnRfbmFtZSI6Ikx1bmEiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjoiI2VjNDg5OSIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBNU5pQTVOaUlnWm1sc2JEMGlJMlZqTkRnNU9TSStQR05wY21Oc1pTQmplRDBpTkRnaUlHTjVQU0kwT0NJZ2NqMGlNVFlpSUdacGJHdzlJaU5tWmlJdlBqeHdZWFJvSUdROUlrMHpNaUEwUXpFMExqVWdOQ0F6TWlBeE5DNDFJRE01TGpVZ01UUWdOVGxnTVRSRE5EY3VOUXB4TVRReE5TNDFJRFZoT1RaeEJpQTRReUkxTVM0MUlESXlJREUySURNeUlERTJJRE15ZWlJZ1ptbHNiRDBpSTJWak5EZzVPU0l2UGp3dmMzWm5QZz09IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6Ijk2eDk2In1dfQ==">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ffeef7 0%, #fff0f9 100%);
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .cycle-info {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            padding: 20px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .status-card {
-            text-align: center;
-            background: linear-gradient(135deg, #fef3f2 0%, #fef7f7 100%);
-            border: 2px solid #fce4ec;
-        }
-
-        .phase-indicator {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .menstrual { background: linear-gradient(135deg, #dc2626, #ef4444); }
-        .follicular { background: linear-gradient(135deg, #059669, #10b981); }
-        .ovulation { background: linear-gradient(135deg, #ea580c, #f97316); }
-        .luteal { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
-
-        .phase-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-
-        .phase-description {
-            color: #6b7280;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .action-btn {
-            background: white;
-            border: 2px solid #f1f5f9;
-            border-radius: 16px;
-            padding: 20px 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: #ec4899;
-        }
-
-        .action-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .action-text {
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 14px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-label {
-            display: block;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #f1f5f9;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            background: #fafafa;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #ec4899;
-            background: white;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 16px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #ec4899;
-            border: 2px solid #ec4899;
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 4px;
-            transition: all 0.3s ease;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .btn-secondary:hover, .btn-secondary.active {
-            background: #ec4899;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .protection-buttons {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
-            margin: 50px auto;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #6b7280;
-        }
-
-        .calendar-container {
-            position: relative;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .calendar-nav {
-            background: #ec4899;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-nav:hover {
-            background: #d946ef;
-        }
-
-        .calendar-month {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-top: 16px;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .calendar-day:hover {
-            background: #f3f4f6;
-        }
-
-        .calendar-day.period {
-            background: #dc2626;
-            color: white;
-        }
-
-        .calendar-day.ovulation {
-            background: #ea580c;
-            color: white;
-        }
-
-        .calendar-day.fertile {
-            background: #10b981;
-            color: white;
-        }
-
-        .calendar-day.activity {
-            border: 2px solid #8b5cf6;
-        }
-
-        .calendar-day.high-risk {
-            border: 3px solid #dc2626;
-            border-style: dashed;
-        }
-
-        .calendar-day-header {
-            font-weight: 600;
-            color: #6b7280;
-            text-align: center;
-            padding: 8px;
-            font-size: 12px;
-        }
-
-        .nav-tabs {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            padding: 8px;
-        }
-
-        .nav-tab {
-            flex: 1;
-            padding: 12px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 12px;
-            margin: 0 4px;
-        }
-
-        .nav-tab.active {
-            background: #ec4899;
-            color: white;
-        }
-
-        .nav-tab-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .nav-tab-text {
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .history-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid #ec4899;
-        }
-
-        .history-date {
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .history-details {
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        .risk-indicator {
-            background: #fef2f2;
-            border: 2px solid #fecaca;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .risk-high {
-            background: #fef2f2;
-            border-color: #fca5a5;
-            color: #dc2626;
-        }
-
-        .risk-medium {
-            background: #fefbf2;
-            border-color: #fed7aa;
-            color: #ea580c;
-        }
-
-        .risk-low {
-            background: #f0fdf4;
-            border-color: #bef264;
-            color: #16a34a;
-        }
-
-        .settings-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 16px;
-            }
-            
-            .header {
-                padding: 16px;
-            }
-            
-            .modal {
-                padding: 10px;
-            }
-
-            .protection-buttons {
-                gap: 4px;
-            }
-
-            .btn-secondary {
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>周期守护助手</title>
+  <link rel="icon" href="https://img.icons8.com/emoji/48/heart-suit.png" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #e75480;
+      --bg: #fff0f5;
+      --card: #ffffffee;
+      --danger: #ff4d4f;
+      --safe: #73d13d;
+    }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+      background: linear-gradient(145deg, #fff0f5, #ffeef2);
+      background-size: cover;
+      min-height: 100vh;
+    }
+    #login, #app {
+      max-width: 420px;
+      margin: 50px auto;
+      padding: 30px 20px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 24px;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    .card {
+      background: #fff7f9;
+      border-left: 5px solid var(--primary);
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    canvas {
+      margin-top: 20px;
+    }
+    #calendar {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🌙 Luna Tracker</h1>
-        <div class="cycle-info" id="cycleInfo">Track your cycle & fertility</div>
-    </div>
 
-    <div class="main-content">
-        <!-- Home Tab -->
-        <div id="homeTab" class="tab-content">
-            <div class="card status-card">
-                <div class="phase-indicator" id="phaseIndicator">🌸</div>
-                <div class="phase-name" id="phaseName">Welcome</div>
-                <div class="phase-description" id="phaseDescription">Start tracking your cycle</div>
-            </div>
+<div id="login">
+  <h1>🔐 周期守护助手</h1>
+  <input type="password" id="passwordInput" placeholder="请输入密码">
+  <button onclick="checkPassword()">进入</button>
+  <div id="loginError" style="color:red;text-align:center;margin-top:10px;"></div>
+</div>
 
-            <div class="quick-actions">
-                <div class="action-btn" onclick="openModal('periodModal')">
-                    <div class="action-icon">🩸</div>
-                    <div class="action-text">Log Period</div>
-                </div>
-                <div class="action-btn" onclick="openModal('activityModal')">
-                    <div class="action-icon">💕</div>
-                    <div class="action-text">Log Activity</div>
-                </div>
-            </div>
+<div id="app" style="display:none;">
+  <h1>周期记录</h1>
 
-            <div class="card">
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <button class="calendar-nav" onclick="changeMonth(-1)">‹</button>
-                        <div class="calendar-month" id="currentMonth"></div>
-                        <button class="calendar-nav" onclick="changeMonth(1)">›</button>
-                    </div>
-                    <div class="calendar" id="calendar"></div>
-                </div>
-            </div>
-        </div>
+  <div class="section">
+    <h3>🩸 月经记录</h3>
+    <input type="date" id="periodStart">
+    <input type="date" id="periodEnd">
+    <button onclick="addPeriod()">添加记录</button>
+    <div id="nextPeriod" class="card"></div>
+  </div>
 
-        <!-- Calendar Tab -->
-        <div id="calendarTab" class="tab-content hidden">
-            <div class="card">
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <button class="calendar-nav" onclick="changeFullMonth(-1)">‹</button>
-                        <div class="calendar-month" id="fullCurrentMonth"></div>
-                        <button class="calendar-nav" onclick="changeFullMonth(1)">›</button>
-                    </div>
-                    <div class="calendar" id="fullCalendar"></div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="section-title">🔍 Legend</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
-                    <div>🩸 Period Days</div>
-                    <div>🥚 Ovulation</div>
-                    <div>🌱 Fertile Window</div>
-                    <div>💜 Activity</div>
-                    <div>⚠️ High Risk Day</div>
-                    <div>📊 28-Day Cycle</div>
-                </div>
-            </div>
-        </div>
+  <div class="section">
+    <h3>🍑 爱爱记录</h3>
+    <select id="withCondom"><option>是</option><option>否</option></select>
+    <select id="ejaculation"><option>内射</option><option>体外</option><option>无射</option></select>
+    <button onclick="recordLove()">添加爱爱记录</button>
+  </div>
 
-        <!-- History Tab -->
-        <div id="historyTab" class="tab-content hidden">
-            <div class="card">
-                <div class="section-title">📋 Recent Activity</div>
-                <div id="historyList"></div>
-            </div>
-        </div>
+  <div class="section">
+    <h3>🌸 危险期提示</h3>
+    <div id="ovulationTip" class="card"></div>
+  </div>
 
-        <!-- Settings Tab -->
-        <div id="settingsTab" class="tab-content hidden">
-            <div class="card">
-                <div class="section-title">⚙️ Settings</div>
-                <div class="input-group">
-                    <label class="input-label">Cycle Length (days)</label>
-                    <input type="number" class="input-field" id="cycleLength" min="21" max="35" value="28">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Period Length (days)</label>
-                    <input type="number" class="input-field" id="periodLength" min="3" max="8" value="5">
-                </div>
-                <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
-                
-                <div class="settings-actions">
-                    <button class="btn-danger" onclick="resetAllData()">Reset All Data</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <h3>📅 插画日历</h3>
+    <div id="calendar"></div>
+  </div>
 
-    <!-- Period Modal -->
-    <div id="periodModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Log Period</h2>
-                <button class="close-btn" onclick="closeModal('periodModal')">&times;</button>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Date</label>
-                <input type="date" class="input-field" id="periodDate">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Flow Level</label>
-                <div class="protection-buttons">
-                    <button class="btn-secondary flow-btn" data-flow="light">Light</button>
-                    <button class="btn-secondary flow-btn" data-flow="medium">Medium</button>
-                    <button class="btn-secondary flow-btn" data-flow="heavy">Heavy</button>
-                </div>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Notes (optional)</label>
-                <input type="text" class="input-field" id="periodNotes" placeholder="Any symptoms or notes...">
-            </div>
-            <button class="btn-primary" onclick="savePeriod()">Save Period Entry</button>
-        </div>
-    </div>
+  <div class="section">
+    <h3>📊 本月行为统计</h3>
+    <div id="loveStats" class="card"></div>
+    <canvas id="ejaculationChart" height="200"></canvas>
+  </div>
+</div>
 
-    <!-- Activity Modal -->
-    <div id="activityModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Log Activity</h2>
-                <button class="close-btn" onclick="closeModal('activityModal')">&times;</button>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Date & Time</label>
-                <input type="datetime-local" class="input-field" id="activityDateTime">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Activity Type</label>
-                <div class="protection-buttons">
-                    <button class="btn-secondary protection-btn" data-protection="cum-inside">💦 Cum Inside</button>
-                    <button class="btn-secondary protection-btn" data-protection="condom">🛡️ Condom</button>
-                    <button class="btn-secondary protection-btn" data-protection="no-condom">🚫 No Condom</button>
-                    <button class="btn-secondary protection-btn" data-protection="didnt-cum">⭕ Didn't Cum</button>
-                </div>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Notes (optional)</label>
-                <input type="text" class="input-field" id="activityNotes" placeholder="Any additional notes...">
-            </div>
-            <div id="pregnancyRisk" class="risk-indicator hidden">
-                <strong>Pregnancy Risk Assessment</strong><br>
-                <span id="riskText"></span>
-            </div>
-            <button class="btn-primary" onclick="saveActivity()">Save Activity</button>
-        </div>
-    </div>
+<script>
+const password = "1234";
+const periods = JSON.parse(localStorage.getItem("periods") || "[]");
+const loves = JSON.parse(localStorage.getItem("loves") || "[]");
 
-    <!-- Navigation -->
-    <div class="nav-tabs">
-        <div class="nav-tab active" onclick="switchTab('home')">
-            <div class="nav-tab-icon">🏠</div>
-            <div class="nav-tab-text">Home</div>
-        </div>
-        <div class="nav-tab" onclick="switchTab('calendar')">
-            <div class="nav-tab-icon">📅</div>
-            <div class="nav-tab-text">Calendar</div>
-        </div>
-        <div class="nav-tab" onclick="switchTab('history')">
-            <div class="nav-tab-icon">📋</div>
-            <div class="nav-tab-text">History</div>
-        </div>
-        <div class="nav-tab" onclick="switchTab('settings')">
-            <div class="nav-tab-icon">⚙️</div>
-            <div class="nav-tab-text">Settings</div>
-        </div>
-    </div>
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  if (input === password) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    renderApp();
+  } else {
+    document.getElementById("loginError").innerText = "密码错误，请重试。";
+  }
+}
 
-    <script>
-        // Data storage
-        let periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
-        let activityData = JSON.parse(localStorage.getItem('activityData') || '[]');
-        let cycleLength = parseInt(localStorage.getItem('cycleLength') || '28');
-        let periodLength = parseInt(localStorage.getItem('periodLength') || '5');
+function addPeriod() {
+  const start = document.getElementById("periodStart").value;
+  const end = document.getElementById("periodEnd").value;
+  if (!start || !end || end <= start) return alert("请输入有效日期");
+  periods.push({ start, end });
+  localStorage.setItem("periods", JSON.stringify(periods));
+  location.reload();
+}
 
-        // Calendar navigation
-        let currentDisplayMonth = new Date().getMonth();
-        let currentDisplayYear = new Date().getFullYear();
-        let fullDisplayMonth = new Date().getMonth();
-        let fullDisplayYear = new Date().getFullYear();
+function recordLove() {
+  const date = new Date().toISOString().slice(0,10);
+  const withCondom = document.getElementById("withCondom").value;
+  const ejaculation = document.getElementById("ejaculation").value;
+  loves.push({ date, withCondom, ejaculation });
+  localStorage.setItem("loves", JSON.stringify(loves));
+  location.reload();
+}
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            setDefaultDates();
-            loadSettings();
-            updateUI();
-            renderCalendar();
-            updateHistory();
-        });
+function getOvulationWindow(startDate) {
+  const ovulation = new Date(startDate);
+  ovulation.setDate(ovulation.getDate() + 14);
+  const start = new Date(ovulation); start.setDate(start.getDate() - 4);
+  const end = new Date(ovulation); end.setDate(end.getDate() + 1);
+  return [start.toISOString().slice(0,10), end.toISOString().slice(0,10)];
+}
 
-        function setDefaultDates() {
-            const now = new Date();
-            document.getElementById('periodDate').value = now.toISOString().split('T')[0];
-            document.getElementById('activityDateTime').value = now.toISOString().slice(0, 16);
-        }
+function isDateInRange(dateStr, start, end) {
+  const date = new Date(dateStr);
+  return date >= new Date(start) && date <= new Date(end);
+}
 
-        function loadSettings() {
-            document.getElementById('cycleLength').value = cycleLength;
-            document.getElementById('periodLength').value = periodLength;
-        }
+function renderApp() {
+  showNextPeriod();
+  showOvulationTip();
+  showLoveStats();
+  showChart();
+  renderCalendar();
+}
 
-        function saveSettings() {
-            cycleLength = parseInt(document.getElementById('cycleLength').value);
-            periodLength = parseInt(document.getElementById('periodLength').value);
-            
-            localStorage.setItem('cycleLength', cycleLength.toString());
-            localStorage.setItem('periodLength', periodLength.toString());
-            
-            updateUI();
-            renderCalendar();
-            alert('Settings saved successfully!');
-        }
+function showNextPeriod() {
+  if (!periods.length) return;
+  const last = periods[periods.length - 1];
+  const start = new Date(last.start);
+  const end = new Date(last.end);
+  const duration = (end - start)/(1000*60*60*24);
+  const next = new Date(start.getTime() + (28 + duration) * 86400000);
+  document.getElementById("nextPeriod").innerHTML = `预计下次月经：<b>${next.toISOString().slice(0,10)}</b>`;
+}
 
-        function resetAllData() {
-            if (confirm('Are you sure you want to delete all data? This cannot be undone.')) {
-                localStorage.clear();
-                periodData = [];
-                activityData = [];
-                cycleLength = 28;
-                periodLength = 5;
-                loadSettings();
-                updateUI();
-                renderCalendar();
-                updateHistory();
-                alert('All data has been reset.');
-            }
-        }
+function showOvulationTip() {
+  if (!periods.length) return;
+  const last = periods[periods.length - 1];
+  const [s, e] = getOvulationWindow(last.start);
+  document.getElementById("ovulationTip").innerHTML = `预计排卵期为 <b>${s}</b> 到 <b>${e}</b>，请注意避孕或备孕哦！`;
+}
 
-        // Calendar navigation functions
-        function changeMonth(direction) {
-            currentDisplayMonth += direction;
-            if (currentDisplayMonth > 11) {
-                currentDisplayMonth = 0;
-                currentDisplayYear++;
-            } else if (currentDisplayMonth < 0) {
-                currentDisplayMonth = 11;
-                currentDisplayYear--;
-            }
-            renderCalendar();
-        }
+function showLoveStats() {
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const monthly = loves.filter(l => l.date.startsWith(thisMonth));
+  const inner = monthly.filter(l => l.ejaculation === "内射").length;
+  const outer = monthly.filter(l => l.ejaculation === "体外").length;
+  const none = monthly.filter(l => l.ejaculation === "无射").length;
+  const risky = monthly.filter(l =>
+    periods.some(p => {
+      const [s, e] = getOvulationWindow(p.start);
+      return isDateInRange(l.date, s, e) && l.withCondom === "否" && l.ejaculation === "内射";
+    })
+  ).length;
 
-        function changeFullMonth(direction) {
-            fullDisplayMonth += direction;
-            if (fullDisplayMonth > 11) {
-                fullDisplayMonth = 0;
-                fullDisplayYear++;
-            } else if (fullDisplayMonth < 0) {
-                fullDisplayMonth = 11;
-                fullDisplayYear--;
-            }
-            renderFullCalendar();
-        }
+  document.getElementById("loveStats").innerHTML = `
+    本月共记录 ${monthly.length} 次<br>
+    - 内射：${inner} 次<br>
+    - 体外：${outer} 次<br>
+    - 无射：${none} 次<br>
+    ⚠️ 高危（危险期无套内射）：<b style="color:red">${risky}</b> 次
+  `;
+}
 
-        // Tab switching
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tab + 'Tab').classList.remove('hidden');
-            event.target.closest('.nav-tab').classList.add('active');
+function showChart() {
+  const ctx = document.getElementById("ejaculationChart").getContext("2d");
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const monthly = loves.filter(l => l.date.startsWith(thisMonth));
+  const inner = monthly.filter(l => l.ejaculation === "内射").length;
+  const outer = monthly.filter(l => l.ejaculation === "体外").length;
+  const none = monthly.filter(l => l.ejaculation === "无射").length;
 
-            if (tab === 'calendar') {
-                renderFullCalendar();
-            }
-        }
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['内射', '体外', '无射'],
+      datasets: [{
+        label: '本月次数',
+        data: [inner, outer, none],
+        backgroundColor: ['#f87171', '#facc15', '#60a5fa']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
 
-        // Modal functions
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-            if (modalId === 'activityModal') {
-                updatePregnancyRisk();
-            }
-        }
+function renderCalendar() {
+  const events = [];
+  periods.forEach(p => {
+    events.push({title: "🩸 月经", start: p.start, end: p.end, color: "#ff85a2"});
+    const [s, e] = getOvulationWindow(p.start);
+    events.push({title: "⚠️ 危险期", start: s, end: e, color: "#ffd666"});
+  });
+  loves.forEach(l => {
+    events.push({title: `💗 爱爱`, start: l.date, color: "#b37feb"});
+  });
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            resetForms();
-        }
-
-        function resetForms() {
-            document.querySelectorAll('.btn-secondary').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
-            document.getElementById('pregnancyRisk').classList.add('hidden');
-        }
-
-        // Button selection
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('flow-btn')) {
-                document.querySelectorAll('.flow-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-            if (e.target.classList.contains('protection-btn')) {
-                document.querySelectorAll('.protection-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                updatePregnancyRisk();
-            }
-        });
-
-        // Update pregnancy risk when activity type or date changes
-        document.getElementById('activityDateTime').addEventListener('change', updatePregnancyRisk);
-
-        function updatePregnancyRisk() {
-            const datetime = document.getElementById('activityDateTime').value;
-            const protectionBtn = document.querySelector('.protection-btn.active');
-            const riskDiv = document.getElementById('pregnancyRisk');
-            const riskText = document.getElementById('riskText');
-
-            if (!datetime || !protectionBtn) {
-                riskDiv.classList.add('hidden');
-                return;
-            }
-
-            const activityDate = new Date(datetime);
-            const risk = calculatePregnancyRisk(activityDate, protectionBtn.dataset.protection);
-            
-            riskDiv.classList.remove('hidden', 'risk-low', 'risk-medium', 'risk-high');
-            riskDiv.classList.add(`risk-${risk.level}`);
-            riskText.innerHTML = `${risk.percentage}% - ${risk.description}`;
-        }
-
-        // Calculate pregnancy risk
-        function calculatePregnancyRisk(activityDate, protectionType) {
-            if (periodData.length === 0) {
-                return { level: 'medium', percentage: '?', description: 'Unable to calculate without period data' };
-            }
-
-            // Find the cycle day
-            const lastPeriod = getLastPeriodBefore(activityDate);
-            if (!lastPeriod) {
-                return { level: 'medium', percentage: '?', description: 'Unable to calculate cycle day' };
-            }
-
-            const daysSinceLastPeriod = Math.floor((activityDate - new Date(lastPeriod.date)) / (1000 * 60 * 60 * 24));
-            const cycleDay = daysSinceLastPeriod + 1;
-
-            // Base fertility risk by cycle day
-            let baseFertility = 0;
-            if (cycleDay >= 1 && cycleDay <= periodLength) {
-                baseFertility = 5; // During period - low but not zero
-            } else if (cycleDay >= (cycleLength / 2 - 5) && cycleDay <= (cycleLength / 2 + 1)) {
-                // Ovulation window (day 9-15 for 28-day cycle)
-                if (cycleDay >= (cycleLength / 2 - 2) && cycleDay <= (cycleLength / 2 + 1)) {
-                    baseFertility = 30; // Peak fertility
-                } else {
-                    baseFertility = 20; // High fertility
-                }
-            } else if (cycleDay
+  const cal = new FullCalendar.Calendar(document.getElementById("calendar"), {
+    initialView: "dayGridMonth",
+    locale: "zh-cn",
+    headerToolbar: { start: "title", end: "prev,next" },
+    events: events
+  });
+  cal.render();
+}
+</script>
+</body>
+</html>

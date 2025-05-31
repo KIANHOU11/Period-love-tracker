@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>月经与爱爱记录（密码保护）</title>
+
+  <!-- App 图标和元信息 -->
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="姨妈记录">
+
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background-color: #fff8f0; color: #333; }
     h1 { color: #cc3366; }
@@ -55,7 +62,7 @@
 </div>
 
 <script>
-  const correctPassword = "1234"; // 你可以改这里设置密码
+  const correctPassword = "1234";
 
   function checkPassword() {
     const input = document.getElementById("passwordInput").value;
@@ -69,7 +76,6 @@
     }
   }
 
-  // 以下是之前功能代码，未改动
   const periods = JSON.parse(localStorage.getItem("periods") || "[]");
   const loves = JSON.parse(localStorage.getItem("loves") || "[]");
 

@@ -1,5 +1,161 @@
+
 <!DOCTYPE html>
-<!-- 内容略，已在上一个步骤展示完整 -->
-<!-- 本 HTML 内容为插画日历 + 危险期提示 + Summary 功能整合版 -->
-<!-- 此处将只写入文件，用户可下载 -->
-周期守护助手 插画版 HTML
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>插画版 周期守护助手</title>
+  <link rel="icon" href="https://img.icons8.com/emoji/48/heart-suit.png" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", "PingFang SC", sans-serif;
+      background: url('https://img.freepik.com/free-vector/cute-floral-seamless-pattern-background_53876-104966.jpg') repeat;
+      background-size: 420px;
+    }
+    #container {
+      max-width: 440px;
+      margin: 30px auto;
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; color: #d84e72; }
+    .section { margin-top: 20px; }
+    .summary, .warning {
+      background: #fff7f9;
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 5px solid #d84e72;
+      font-size: 14px;
+    }
+    input, select, button {
+      width: 100%; padding: 10px; margin-top: 8px;
+      font-size: 16px; border-radius: 8px; border: 1px solid #ccc;
+    }
+    button { background-color: #d84e72; color: white; border: none; }
+  </style>
+</head>
+<body>
+<div id="container">
+  <h1>周期守护助手</h1>
+
+  <div class="section">
+    <h3>🩸 月经记录</h3>
+    <input type="date" id="periodStart" />
+    <input type="date" id="periodEnd" />
+    <button onclick="addPeriod()">添加记录</button>
+    <div id="nextPeriod" class="summary"></div>
+  </div>
+
+  <div class="section">
+    <h3>🍑 爱爱记录</h3>
+    <select id="withCondom"><option>是</option><option>否</option></select>
+    <select id="ejaculation"><option>内射</option><option>体外</option><option>无射</option></select>
+    <button onclick="recordLove()">添加爱爱记录</button>
+  </div>
+
+  <div class="section warning" id="ovulationTip"></div>
+
+  <div class="section">
+    <h3>📅 插画日历</h3>
+    <div id="calendar"></div>
+  </div>
+
+  <div class="section">
+    <h3>📊 本月 Summary</h3>
+    <div id="loveStats" class="summary"></div>
+  </div>
+</div>
+
+<script>
+const periods = JSON.parse(localStorage.getItem("periods") || "[]");
+const loves = JSON.parse(localStorage.getItem("loves") || "[]");
+
+function getOvulationWindow(startDate) {
+  const ovulation = new Date(startDate);
+  ovulation.setDate(ovulation.getDate() + 14);
+  const f1 = new Date(ovulation); f1.setDate(f1.getDate() - 4);
+  const f2 = new Date(ovulation); f2.setDate(f2.getDate() + 1);
+  return [f1.toISOString().slice(0,10), f2.toISOString().slice(0,10)];
+}
+function isDateInRange(d, s, e) {
+  const dt = new Date(d);
+  return dt >= new Date(s) && dt <= new Date(e);
+}
+function addPeriod() {
+  const start = document.getElementById("periodStart").value;
+  const end = document.getElementById("periodEnd").value;
+  if (!start || !end || end <= start) return alert("请填写有效日期");
+  periods.push({start, end});
+  localStorage.setItem("periods", JSON.stringify(periods));
+  location.reload();
+}
+function recordLove() {
+  const date = new Date().toISOString().slice(0,10);
+  const withCondom = document.getElementById("withCondom").value;
+  const ejaculation = document.getElementById("ejaculation").value;
+  loves.push({date, withCondom, ejaculation});
+  localStorage.setItem("loves", JSON.stringify(loves));
+  location.reload();
+}
+function showNextPeriod() {
+  if (!periods.length) return;
+  const last = periods[periods.length - 1];
+  const start = new Date(last.start);
+  const end = new Date(last.end);
+  const duration = (end - start)/(1000*60*60*24);
+  const next = new Date(start.getTime() + (28 + duration) * 86400000);
+  document.getElementById("nextPeriod").innerHTML = `预计下次月经：<b>${next.toISOString().slice(0,10)}</b>`;
+}
+function showOvulationTip() {
+  if (!periods.length) return;
+  const last = periods[periods.length - 1];
+  const [s, e] = getOvulationWindow(last.start);
+  document.getElementById("ovulationTip").innerHTML = `🌸 本周期危险期：<b>${s}</b> 到 <b>${e}</b>，请注意避孕或备孕`;
+}
+function showLoveStats() {
+  const m = new Date().toISOString().slice(0,7);
+  const list = loves.filter(l => l.date.startsWith(m));
+  const inner = list.filter(l => l.ejaculation === "内射").length;
+  const outer = list.filter(l => l.ejaculation === "体外").length;
+  const none = list.filter(l => l.ejaculation === "无射").length;
+  const risky = list.filter(l => {
+    return periods.some(p => {
+      const [s, e] = getOvulationWindow(p.start);
+      return isDateInRange(l.date, s, e) && l.withCondom === "否" && l.ejaculation === "内射";
+    });
+  }).length;
+  document.getElementById("loveStats").innerHTML = `
+    总次数：${list.length}<br>内射：${inner}，体外：${outer}，无射：${none}<br>
+    ⚠️ 高危无套内射：<b style="color:red">${risky}</b> 次
+  `;
+}
+function generateEvents() {
+  const ev = [];
+  periods.forEach(p => {
+    ev.push({title:"🩸月经",start:p.start,end:p.end,color:"#ff85a2"});
+    const [s,e] = getOvulationWindow(p.start);
+    ev.push({title:"⚠️危险期",start:s,end:e,color:"#ffe58f"});
+  });
+  loves.forEach(l => {
+    ev.push({title:"💗爱爱",start:l.date,color:"#b37feb"});
+  });
+  return ev;
+}
+document.addEventListener("DOMContentLoaded", function() {
+  showNextPeriod(); showOvulationTip(); showLoveStats();
+  const cal = new FullCalendar.Calendar(document.getElementById("calendar"), {
+    initialView: "dayGridMonth",
+    locale: "zh-cn",
+    headerToolbar: {start:"title",end:"prev,next"},
+    events: generateEvents()
+  });
+  cal.render();
+});
+</script>
+</body>
+</html>

@@ -23,90 +23,12 @@
             padding-bottom: 80px;
         }
 
-        /* Login Screen */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 24px;
-            padding: 40px 32px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .login-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-
-        .login-subtitle {
-            color: #6b7280;
-            margin-bottom: 32px;
-            font-size: 16px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #f1f5f9;
-            border-radius: 12px;
-            font-size: 16px;
-            margin-bottom: 24px;
-            transition: border-color 0.3s ease;
-        }
-
-        .login-input:focus {
-            outline: none;
-            border-color: #ec4899;
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 16px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
-        }
-
-        .error-message {
-            color: #dc2626;
-            font-size: 14px;
-            margin-top: 12px;
-            text-align: center;
-        }
-
         .header {
             background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
             color: white;
             padding: 20px;
             text-align: center;
             box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);
-            position: relative;
         }
 
         .header h1 {
@@ -118,24 +40,6 @@
         .cycle-info {
             font-size: 16px;
             opacity: 0.9;
-        }
-
-        .reset-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .main-content {
@@ -236,39 +140,6 @@
             gap: 8px;
         }
 
-        .calendar-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .nav-arrow {
-            background: #ec4899;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-arrow:hover {
-            background: #d946ef;
-            transform: scale(1.1);
-        }
-
-        .month-year {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1f2937;
-        }
-
         .input-group {
             margin-bottom: 20px;
         }
@@ -320,7 +191,7 @@
             color: #ec4899;
             border: 2px solid #ec4899;
             border-radius: 12px;
-            padding: 12px 16px;
+            padding: 10px 16px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -335,44 +206,26 @@
             color: white;
         }
 
-        .protection-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .risk-indicator {
-            background: linear-gradient(135deg, #fef3f2 0%, #fef7f7 100%);
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            border: none;
             border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .risk-high {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border: 2px solid #fecaca;
-        }
-
-        .risk-medium {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border: 2px solid #fed7aa;
-        }
-
-        .risk-low {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border: 2px solid #bbf7d0;
-        }
-
-        .risk-percentage {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .risk-text {
+            padding: 12px 20px;
             font-size: 14px;
-            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .protection-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .modal {
@@ -419,6 +272,39 @@
             color: #6b7280;
         }
 
+        .calendar-container {
+            position: relative;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-nav {
+            background: #ec4899;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            background: #d946ef;
+        }
+
+        .calendar-month {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -458,15 +344,15 @@
         }
 
         .calendar-day.activity {
-            border: 3px solid #8b5cf6;
+            border: 2px solid #8b5cf6;
         }
 
-        .calendar-day.predicted-period {
-            background: #fca5a5;
-            color: #dc2626;
+        .calendar-day.high-risk {
+            border: 3px solid #dc2626;
+            border-style: dashed;
         }
 
-        .calendar-header {
+        .calendar-day-header {
             font-weight: 600;
             color: #6b7280;
             text-align: center;
@@ -533,51 +419,37 @@
             font-size: 14px;
         }
 
-        .confirm-dialog {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1500;
-        }
-
-        .confirm-content {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 300px;
+        .risk-indicator {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 16px;
             text-align: center;
         }
 
-        .confirm-buttons {
+        .risk-high {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .risk-medium {
+            background: #fefbf2;
+            border-color: #fed7aa;
+            color: #ea580c;
+        }
+
+        .risk-low {
+            background: #f0fdf4;
+            border-color: #bef264;
+            color: #16a34a;
+        }
+
+        .settings-actions {
             display: flex;
             gap: 12px;
             margin-top: 20px;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .btn-cancel {
-            background: #f3f4f6;
-            color: #374151;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            cursor: pointer;
-            flex: 1;
         }
 
         @media (max-width: 480px) {
@@ -594,226 +466,209 @@
             }
 
             .protection-buttons {
-                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+
+            .btn-secondary {
+                font-size: 12px;
+                padding: 8px 12px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="login-screen">
-        <div class="login-card">
-            <h1 class="login-title">🌙 Luna Tracker</h1>
-            <p class="login-subtitle">Enter your password to access</p>
-            <input type="password" id="passwordInput" class="login-input" placeholder="Enter password">
-            <button onclick="checkPassword()" class="login-btn">Enter</button>
-            <div id="loginError" class="error-message hidden">Incorrect password. Please try again.</div>
-        </div>
+    <div class="header">
+        <h1>🌙 Luna Tracker</h1>
+        <div class="cycle-info" id="cycleInfo">Track your cycle & fertility</div>
     </div>
 
-    <!-- Main App -->
-    <div id="mainApp" class="hidden">
-        <div class="header">
-            <button class="reset-btn" onclick="showResetConfirm()">Reset Data</button>
-            <h1>🌙 Luna Tracker</h1>
-            <div class="cycle-info" id="cycleInfo">Track your cycle & fertility</div>
-        </div>
+    <div class="main-content">
+        <!-- Home Tab -->
+        <div id="homeTab" class="tab-content">
+            <div class="card status-card">
+                <div class="phase-indicator" id="phaseIndicator">🌸</div>
+                <div class="phase-name" id="phaseName">Welcome</div>
+                <div class="phase-description" id="phaseDescription">Start tracking your cycle</div>
+            </div>
 
-        <div class="main-content">
-            <!-- Home Tab -->
-            <div id="homeTab" class="tab-content">
-                <div class="card status-card">
-                    <div class="phase-indicator" id="phaseIndicator">🌸</div>
-                    <div class="phase-name" id="phaseName">Welcome</div>
-                    <div class="phase-description" id="phaseDescription">Start tracking your cycle</div>
+            <div class="quick-actions">
+                <div class="action-btn" onclick="openModal('periodModal')">
+                    <div class="action-icon">🩸</div>
+                    <div class="action-text">Log Period</div>
                 </div>
-
-                <div class="quick-actions">
-                    <div class="action-btn" onclick="openModal('periodModal')">
-                        <div class="action-icon">🩸</div>
-                        <div class="action-text">Log Period</div>
-                    </div>
-                    <div class="action-btn" onclick="openModal('activityModal')">
-                        <div class="action-icon">💕</div>
-                        <div class="action-text">Log Activity</div>
-                    </div>
+                <div class="action-btn" onclick="openModal('activityModal')">
+                    <div class="action-icon">💕</div>
+                    <div class="action-text">Log Activity</div>
                 </div>
+            </div>
 
-                <div class="card">
-                    <div class="calendar-navigation">
-                        <button class="nav-arrow" onclick="changeMonth(-1)">‹</button>
-                        <div class="month-year" id="currentMonthYear"></div>
-                        <button class="nav-arrow" onclick="changeMonth(1)">›</button>
+            <div class="card">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" onclick="changeMonth(-1)">‹</button>
+                        <div class="calendar-month" id="currentMonth"></div>
+                        <button class="calendar-nav" onclick="changeMonth(1)">›</button>
                     </div>
                     <div class="calendar" id="calendar"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Calendar Tab -->
-            <div id="calendarTab" class="tab-content hidden">
-                <div class="card">
-                    <div class="calendar-navigation">
-                        <button class="nav-arrow" onclick="changeFullMonth(-1)">‹</button>
-                        <div class="month-year" id="fullMonthYear"></div>
-                        <button class="nav-arrow" onclick="changeFullMonth(1)">›</button>
+        <!-- Calendar Tab -->
+        <div id="calendarTab" class="tab-content hidden">
+            <div class="card">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" onclick="changeFullMonth(-1)">‹</button>
+                        <div class="calendar-month" id="fullCurrentMonth"></div>
+                        <button class="calendar-nav" onclick="changeFullMonth(1)">›</button>
                     </div>
                     <div class="calendar" id="fullCalendar"></div>
                 </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-title">🔍 Legend</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
+                    <div>🩸 Period Days</div>
+                    <div>🥚 Ovulation</div>
+                    <div>🌱 Fertile Window</div>
+                    <div>💜 Activity</div>
+                    <div>⚠️ High Risk Day</div>
+                    <div>📊 28-Day Cycle</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="historyTab" class="tab-content hidden">
+            <div class="card">
+                <div class="section-title">📋 Recent Activity</div>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="tab-content hidden">
+            <div class="card">
+                <div class="section-title">⚙️ Settings</div>
+                <div class="input-group">
+                    <label class="input-label">Cycle Length (days)</label>
+                    <input type="number" class="input-field" id="cycleLength" min="21" max="35" value="28">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Period Length (days)</label>
+                    <input type="number" class="input-field" id="periodLength" min="3" max="8" value="5">
+                </div>
+                <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
                 
-                <div class="card">
-                    <div class="section-title">🔍 Legend</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
-                        <div>🩸 Period Days</div>
-                        <div>🥚 Ovulation</div>
-                        <div>🌱 Fertile Window</div>
-                        <div>💜 Activity</div>
-                        <div>📅 Predicted Period</div>
-                        <div></div>
-                    </div>
+                <div class="settings-actions">
+                    <button class="btn-danger" onclick="resetAllData()">Reset All Data</button>
                 </div>
-            </div>
-
-            <!-- History Tab -->
-            <div id="historyTab" class="tab-content hidden">
-                <div class="card">
-                    <div class="section-title">📋 Recent Activity</div>
-                    <div id="historyList"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Period Modal -->
-        <div id="periodModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Log Period</h2>
-                    <button class="close-btn" onclick="closeModal('periodModal')">&times;</button>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Date</label>
-                    <input type="date" class="input-field" id="periodDate">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Flow Level</label>
-                    <div class="protection-buttons">
-                        <button class="btn-secondary flow-btn" data-flow="light">Light</button>
-                        <button class="btn-secondary flow-btn" data-flow="medium">Medium</button>
-                        <button class="btn-secondary flow-btn" data-flow="heavy">Heavy</button>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Notes (optional)</label>
-                    <input type="text" class="input-field" id="periodNotes" placeholder="Any symptoms or notes...">
-                </div>
-                <button class="btn-primary" onclick="savePeriod()">Save Period Entry</button>
-            </div>
-        </div>
-
-        <!-- Activity Modal -->
-        <div id="activityModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Log Activity</h2>
-                    <button class="close-btn" onclick="closeModal('activityModal')">&times;</button>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Date & Time</label>
-                    <input type="datetime-local" class="input-field" id="activityDateTime">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Activity Type</label>
-                    <div class="protection-buttons">
-                        <button class="btn-secondary protection-btn" data-protection="cum_inside">💦 Cum Inside</button>
-                        <button class="btn-secondary protection-btn" data-protection="condom">🛡️ Condom</button>
-                        <button class="btn-secondary protection-btn" data-protection="no_condom">🚫 No Condom</button>
-                        <button class="btn-secondary protection-btn" data-protection="no_cum">❌ Didn't Cum</button>
-                    </div>
-                </div>
-                <div id="riskAssessment" class="risk-indicator hidden">
-                    <div class="risk-percentage" id="riskPercentage">0%</div>
-                    <div class="risk-text" id="riskText">Pregnancy Risk</div>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Notes (optional)</label>
-                    <input type="text" class="input-field" id="activityNotes" placeholder="Any additional notes...">
-                </div>
-                <button class="btn-primary" onclick="saveActivity()">Save Activity</button>
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchTab('home')">
-                <div class="nav-tab-icon">🏠</div>
-                <div class="nav-tab-text">Home</div>
-            </div>
-            <div class="nav-tab" onclick="switchTab('calendar')">
-                <div class="nav-tab-icon">📅</div>
-                <div class="nav-tab-text">Calendar</div>
-            </div>
-            <div class="nav-tab" onclick="switchTab('history')">
-                <div class="nav-tab-icon">📋</div>
-                <div class="nav-tab-text">History</div>
             </div>
         </div>
     </div>
 
-    <!-- Reset Confirmation -->
-    <div id="resetConfirm" class="confirm-dialog hidden">
-        <div class="confirm-content">
-            <h3>⚠️ Reset All Data</h3>
-            <p>This will permanently delete all your period and activity data. This action cannot be undone.</p>
-            <div class="confirm-buttons">
-                <button class="btn-cancel" onclick="hideResetConfirm()">Cancel</button>
-                <button class="btn-danger" onclick="resetAllData()">Reset</button>
+    <!-- Period Modal -->
+    <div id="periodModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Period</h2>
+                <button class="close-btn" onclick="closeModal('periodModal')">&times;</button>
             </div>
+            <div class="input-group">
+                <label class="input-label">Date</label>
+                <input type="date" class="input-field" id="periodDate">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Flow Level</label>
+                <div class="protection-buttons">
+                    <button class="btn-secondary flow-btn" data-flow="light">Light</button>
+                    <button class="btn-secondary flow-btn" data-flow="medium">Medium</button>
+                    <button class="btn-secondary flow-btn" data-flow="heavy">Heavy</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Notes (optional)</label>
+                <input type="text" class="input-field" id="periodNotes" placeholder="Any symptoms or notes...">
+            </div>
+            <button class="btn-primary" onclick="savePeriod()">Save Period Entry</button>
+        </div>
+    </div>
+
+    <!-- Activity Modal -->
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Activity</h2>
+                <button class="close-btn" onclick="closeModal('activityModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Date & Time</label>
+                <input type="datetime-local" class="input-field" id="activityDateTime">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Activity Type</label>
+                <div class="protection-buttons">
+                    <button class="btn-secondary protection-btn" data-protection="cum-inside">💦 Cum Inside</button>
+                    <button class="btn-secondary protection-btn" data-protection="condom">🛡️ Condom</button>
+                    <button class="btn-secondary protection-btn" data-protection="no-condom">🚫 No Condom</button>
+                    <button class="btn-secondary protection-btn" data-protection="didnt-cum">⭕ Didn't Cum</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Notes (optional)</label>
+                <input type="text" class="input-field" id="activityNotes" placeholder="Any additional notes...">
+            </div>
+            <div id="pregnancyRisk" class="risk-indicator hidden">
+                <strong>Pregnancy Risk Assessment</strong><br>
+                <span id="riskText"></span>
+            </div>
+            <button class="btn-primary" onclick="saveActivity()">Save Activity</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchTab('home')">
+            <div class="nav-tab-icon">🏠</div>
+            <div class="nav-tab-text">Home</div>
+        </div>
+        <div class="nav-tab" onclick="switchTab('calendar')">
+            <div class="nav-tab-icon">📅</div>
+            <div class="nav-tab-text">Calendar</div>
+        </div>
+        <div class="nav-tab" onclick="switchTab('history')">
+            <div class="nav-tab-icon">📋</div>
+            <div class="nav-tab-text">History</div>
+        </div>
+        <div class="nav-tab" onclick="switchTab('settings')">
+            <div class="nav-tab-icon">⚙️</div>
+            <div class="nav-tab-text">Settings</div>
         </div>
     </div>
 
     <script>
-        // Data storage (using in-memory variables instead of localStorage)
-        let periodData = [];
-        let activityData = [];
-        let cycleLength = 28;
-        let periodLength = 5;
-        
+        // Data storage
+        let periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
+        let activityData = JSON.parse(localStorage.getItem('activityData') || '[]');
+        let cycleLength = parseInt(localStorage.getItem('cycleLength') || '28');
+        let periodLength = parseInt(localStorage.getItem('periodLength') || '5');
+
         // Calendar navigation
-        let currentCalendarDate = new Date();
-        let fullCalendarDate = new Date();
-
-        // Password - changed to 1234
-        const APP_PASSWORD = '1234';
-
-        // Login functionality
-        function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === APP_PASSWORD) {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                initializeApp();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-
-        // Allow Enter key to login
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
-            });
-        });
+        let currentDisplayMonth = new Date().getMonth();
+        let currentDisplayYear = new Date().getFullYear();
+        let fullDisplayMonth = new Date().getMonth();
+        let fullDisplayYear = new Date().getFullYear();
 
         // Initialize app
-        function initializeApp() {
+        document.addEventListener('DOMContentLoaded', function() {
             setDefaultDates();
+            loadSettings();
             updateUI();
             renderCalendar();
-            renderFullCalendar();
             updateHistory();
-        }
+        });
 
         function setDefaultDates() {
             const now = new Date();
@@ -821,14 +676,60 @@
             document.getElementById('activityDateTime').value = now.toISOString().slice(0, 16);
         }
 
-        // Calendar navigation
+        function loadSettings() {
+            document.getElementById('cycleLength').value = cycleLength;
+            document.getElementById('periodLength').value = periodLength;
+        }
+
+        function saveSettings() {
+            cycleLength = parseInt(document.getElementById('cycleLength').value);
+            periodLength = parseInt(document.getElementById('periodLength').value);
+            
+            localStorage.setItem('cycleLength', cycleLength.toString());
+            localStorage.setItem('periodLength', periodLength.toString());
+            
+            updateUI();
+            renderCalendar();
+            alert('Settings saved successfully!');
+        }
+
+        function resetAllData() {
+            if (confirm('Are you sure you want to delete all data? This cannot be undone.')) {
+                localStorage.clear();
+                periodData = [];
+                activityData = [];
+                cycleLength = 28;
+                periodLength = 5;
+                loadSettings();
+                updateUI();
+                renderCalendar();
+                updateHistory();
+                alert('All data has been reset.');
+            }
+        }
+
+        // Calendar navigation functions
         function changeMonth(direction) {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            currentDisplayMonth += direction;
+            if (currentDisplayMonth > 11) {
+                currentDisplayMonth = 0;
+                currentDisplayYear++;
+            } else if (currentDisplayMonth < 0) {
+                currentDisplayMonth = 11;
+                currentDisplayYear--;
+            }
             renderCalendar();
         }
 
         function changeFullMonth(direction) {
-            fullCalendarDate.setMonth(fullCalendarDate.getMonth() + direction);
+            fullDisplayMonth += direction;
+            if (fullDisplayMonth > 11) {
+                fullDisplayMonth = 0;
+                fullDisplayYear++;
+            } else if (fullDisplayMonth < 0) {
+                fullDisplayMonth = 11;
+                fullDisplayYear--;
+            }
             renderFullCalendar();
         }
 
@@ -848,12 +749,81 @@
         // Modal functions
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
+            if (modalId === 'activityModal') {
+                updatePregnancyRisk();
+            }
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
-            clearModalSelections();
+            resetForms();
         }
 
-        function clearModalSelections() {
-            document.querySelectorAll('.
+        function resetForms() {
+            document.querySelectorAll('.btn-secondary').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+            document.getElementById('pregnancyRisk').classList.add('hidden');
+        }
+
+        // Button selection
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('flow-btn')) {
+                document.querySelectorAll('.flow-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+            if (e.target.classList.contains('protection-btn')) {
+                document.querySelectorAll('.protection-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                updatePregnancyRisk();
+            }
+        });
+
+        // Update pregnancy risk when activity type or date changes
+        document.getElementById('activityDateTime').addEventListener('change', updatePregnancyRisk);
+
+        function updatePregnancyRisk() {
+            const datetime = document.getElementById('activityDateTime').value;
+            const protectionBtn = document.querySelector('.protection-btn.active');
+            const riskDiv = document.getElementById('pregnancyRisk');
+            const riskText = document.getElementById('riskText');
+
+            if (!datetime || !protectionBtn) {
+                riskDiv.classList.add('hidden');
+                return;
+            }
+
+            const activityDate = new Date(datetime);
+            const risk = calculatePregnancyRisk(activityDate, protectionBtn.dataset.protection);
+            
+            riskDiv.classList.remove('hidden', 'risk-low', 'risk-medium', 'risk-high');
+            riskDiv.classList.add(`risk-${risk.level}`);
+            riskText.innerHTML = `${risk.percentage}% - ${risk.description}`;
+        }
+
+        // Calculate pregnancy risk
+        function calculatePregnancyRisk(activityDate, protectionType) {
+            if (periodData.length === 0) {
+                return { level: 'medium', percentage: '?', description: 'Unable to calculate without period data' };
+            }
+
+            // Find the cycle day
+            const lastPeriod = getLastPeriodBefore(activityDate);
+            if (!lastPeriod) {
+                return { level: 'medium', percentage: '?', description: 'Unable to calculate cycle day' };
+            }
+
+            const daysSinceLastPeriod = Math.floor((activityDate - new Date(lastPeriod.date)) / (1000 * 60 * 60 * 24));
+            const cycleDay = daysSinceLastPeriod + 1;
+
+            // Base fertility risk by cycle day
+            let baseFertility = 0;
+            if (cycleDay >= 1 && cycleDay <= periodLength) {
+                baseFertility = 5; // During period - low but not zero
+            } else if (cycleDay >= (cycleLength / 2 - 5) && cycleDay <= (cycleLength / 2 + 1)) {
+                // Ovulation window (day 9-15 for 28-day cycle)
+                if (cycleDay >= (cycleLength / 2 - 2) && cycleDay <= (cycleLength / 2 + 1)) {
+                    baseFertility = 30; // Peak fertility
+                } else {
+                    baseFertility = 20; // High fertility
+                }
+            } else if (cycleDay

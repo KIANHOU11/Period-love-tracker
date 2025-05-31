@@ -771,18 +771,18 @@
     </div>
 
     <script>
-        // Data storage
-        let periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
-        let activityData = JSON.parse(localStorage.getItem('activityData') || '[]');
-        let cycleLength = parseInt(localStorage.getItem('cycleLength') || '28');
-        let periodLength = parseInt(localStorage.getItem('periodLength') || '5');
+        // Data storage (using in-memory variables instead of localStorage)
+        let periodData = [];
+        let activityData = [];
+        let cycleLength = 28;
+        let periodLength = 5;
         
         // Calendar navigation
         let currentCalendarDate = new Date();
         let fullCalendarDate = new Date();
 
-        // Password
-        const APP_PASSWORD = 'luna123'; // Change this to your desired password
+        // Password - changed to 1234
+        const APP_PASSWORD = '1234';
 
         // Login functionality
         function checkPassword() {
@@ -851,4 +851,9 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 
+            document.getElementById(modalId).style.display = 'none';
+            clearModalSelections();
+        }
+
+        function clearModalSelections() {
+            document.querySelectorAll('.

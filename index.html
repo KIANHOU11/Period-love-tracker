@@ -1,202 +1,380 @@
-<!DOCTYPE html>
-<html lang="zh">
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>周期守护助手</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YanZi’s Cycle Sanctuary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
   <style>
     body {
-      font-family: "Helvetica Neue", "PingFang SC", sans-serif;
-      margin: 0;
-      background: linear-gradient(135deg, #ffe4ec, #fff0f5);
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
     }
-    .container {
-      max-width: 440px;
-      margin: 40px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    .calendar-day {
+      transition: all 0.2s ease-in-out;
     }
-    h1 { color: #e75480; text-align: center; }
-    input, select, button {
-      width: 100%; padding: 12px; margin-top: 10px;
-      font-size: 16px; border-radius: 10px; border: 1px solid #ccc;
+    .calendar-day:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    button { background: #e75480; color: white; border: none; }
-    .card {
-      background: #fff0f5;
-      padding: 10px;
-      border-left: 5px solid #e75480;
-      border-radius: 8px;
-      margin-top: 10px;
+    .modal {
+      transition: opacity 0.3s ease-in-out;
     }
-    canvas { margin-top: 16px; max-height: 220px; width: 100%; }
+    .icon {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      vertical-align: middle;
+    }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-6 px-4 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-3xl font-bold flex items-center">
+        <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104-.896-2-2-2s-2 .896-2 2 2 4 2 4 2-2.896 2-4zm0 0c0 1.104.896 2 2 2s2-.896 2-2-2-4-2-4-2 2.896-2 4zm-6 7v2h12v-2H6z"></path></svg>
+        YanZi’s Cycle Sanctuary
+      </h1>
+      <nav>
+        <a href="#calendar" class="px-4 hover:underline">Calendar</a>
+        <a href="#charts" class="px-4 hover:underline">Analysis</a>
+      </nav>
+    </div>
+  </header>
 
-<div id="login" class="container" style="display:none;">
-  <h1>🔐 周期守护助手</h1>
-  <input type="password" id="passwordInput" placeholder="请输入密码">
-  <button onclick="checkPassword()">进入</button>
-  <div id="loginError" style="color:red; text-align:center; margin-top: 10px;"></div>
-</div>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8 px-4 flex-grow">
+    <!-- Period Tracking Section -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+        Period Tracking
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <form id="period-form" class="space-y-4">
+          <div>
+            <label for="period-date" class="block text-sm font-medium text-gray-700">Period Start Date</label>
+            <input type="date" id="period-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
+          </div>
+          <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Add Period</button>
+        </form>
+      </div>
+    </section>
 
-<div id="app" class="container" style="display:none;">
-  <h1>周期记录</h1>
-  <h3>🩸 月经记录</h3>
-  <input type="date" id="periodStart">
-  <input type="date" id="periodEnd">
-  <button onclick="addPeriod()">添加记录</button>
-  <div id="nextPeriod" class="card"></div>
+    <!-- Sexual Activity Tracking Section -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        Sexual Activity
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <form id="sex-form" class="space-y-4">
+          <div>
+            <label for="sex-date" class="block text-sm font-medium text-gray-700">Date</label>
+            <input type="date" id="sex-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Protection Used</label>
+            <div class="mt-2 space-x-4">
+              <label><input type="radio" name="protection" value="yes" class="mr-1">Yes</label>
+              <label><input type="radio" name="protection" value="no" class="mr-1">No</label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Ejaculation Type</label>
+            <div class="mt-2 space-x-4">
+              <label><input type="radio" name="ejaculation" value="inside" class="mr-1">Inside</label>
+              <label><input type="radio" name="ejaculation" value="outside" class="mr-1">Outside</label>
+              <label><input type="radio" name="ejaculation" value="none" class="mr-1">None</label>
+            </div>
+          </div>
+          <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition">Add Record</button>
+        </form>
+      </div>
+    </section>
 
-  <h3>🍑 爱爱记录</h3>
-  <select id="withCondom">
-    <option>是</option><option>否</option>
-  </select>
-  <select id="ejaculation">
-    <option>内射</option><option>体外</option><option>无射</option>
-  </select>
-  <button onclick="addLove()">添加爱爱记录</button>
+    <!-- Calendar Section -->
+    <section id="calendar" class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        Cycle Calendar
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex justify-between mb-4">
+          <button id="prev-month" class="text-pink-500 hover:text-pink-600">← Previous</button>
+          <h3 id="month-year" class="text-lg font-semibold"></h3>
+          <button id="next-month" class="text-pink-500 hover:text-pink-600">Next →</button>
+        </div>
+        <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center"></div>
+      </div>
+    </section>
 
-  <h3>📅 插画日历</h3>
-  <div id="calendar"></div>
+    <!-- Chart Section -->
+    <section id="charts" class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h3m0 0v6m0-6H6m6 0h3m-3 6h3m-9 3h12a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        Cycle Analysis
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <canvas id="cycle-chart" class="w-full"></canvas>
+      </div>
+    </section>
+  </main>
 
-  <h3>📊 图表分析</h3>
-  <div id="loveStats" class="card"></div>
-  <canvas id="chart"></canvas>
-</div>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-4">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p>© 2025 YanZi’s Cycle Sanctuary. All rights reserved.</p>
+    </div>
+  </footer>
 
-<script>
-const PASSWORD = "1234";
+  <!-- Modal for Day Details -->
+  <div id="day-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h3 id="modal-title" class="text-lg font-semibold mb-4"></h3>
+      <p id="modal-details" class="text-sm text-gray-600"></p>
+      <button id="close-modal" class="mt-4 bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Close</button>
+    </div>
+  </div>
 
-if (localStorage.getItem("unlocked") === "yes") {
-  showApp();
-} else {
-  document.getElementById("login").style.display = "block";
-}
+  <script>
+    // Data storage (simulated local storage)
+    let periods = JSON.parse(localStorage.getItem('periods')) || [];
+    let sexRecords = JSON.parse(localStorage.getItem('sexRecords')) || [];
+    const cycleLength = 28; // Average cycle length
+    const ovulationDay = 14; // Approx ovulation day
+    const fertileWindow = 5; // Days around ovulation
 
-function checkPassword() {
-  const input = document.getElementById("passwordInput").value;
-  if (input === PASSWORD) {
-    localStorage.setItem("unlocked", "yes");
-    showApp();
-  } else {
-    document.getElementById("loginError").innerText = "密码错误，请重试";
-  }
-}
+    // Calendar logic
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
 
-function showApp() {
-  document.getElementById("login").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  renderApp();
-}
+    function renderCalendar() {
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startDay = firstDay.getDay();
+      const monthYear = document.getElementById('month-year');
+      monthYear.textContent = dateFns.format(firstDay, 'MMMM yyyy');
 
-function renderApp() {
-  updateNextPeriod();
-  updateStats();
-  renderChart();
-  renderCalendar();
-}
+      const calendarGrid = document.getElementById('calendar-grid');
+      calendarGrid.innerHTML = `
+        <div class="font-semibold text-gray-600">Sun</div>
+        <div class="font-semibold text-gray-600">Mon</div>
+        <div class="font-semibold text-gray-600">Tue</div>
+        <div class="font-semibold text-gray-600">Wed</div>
+        <div class="font-semibold text-gray-600">Thu</div>
+        <div class="font-semibold text-gray-600">Fri</div>
+        <div class="font-semibold text-gray-600">Sat</div>
+      `;
 
-const periods = JSON.parse(localStorage.getItem("periods") || "[]");
-const loves = JSON.parse(localStorage.getItem("loves") || "[]");
+      // Add empty slots for days before the first day
+      for (let i = 0; i < startDay; i++) {
+        calendarGrid.innerHTML += `<div></div>`;
+      }
 
-function addPeriod() {
-  const start = document.getElementById("periodStart").value;
-  const end = document.getElementById("periodEnd").value;
-  if (!start || !end || end < start) return alert("日期无效");
-  periods.push({ start, end });
-  localStorage.setItem("periods", JSON.stringify(periods));
-  location.reload();
-}
+      // Add days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dateStr = dateFns.format(date, 'yyyy-MM-dd');
+        let classes = 'calendar-day p-2 rounded-full text-center cursor-pointer';
+        let details = '';
 
-function addLove() {
-  const date = new Date().toISOString().slice(0,10);
-  const withCondom = document.getElementById("withCondom").value;
-  const ejaculation = document.getElementById("ejaculation").value;
-  loves.push({ date, withCondom, ejaculation });
-  localStorage.setItem("loves", JSON.stringify(loves));
-  location.reload();
-}
+        // Check for period
+        const isPeriod = periods.includes(dateStr);
+        if (isPeriod) {
+          classes += ' bg-red-200';
+          details += 'Period<br>';
+        }
 
-function getOvulation(startDate) {
-  const ovulation = new Date(startDate);
-  ovulation.setDate(ovulation.getDate() + 14);
-  const start = new Date(ovulation); start.setDate(start.getDate() - 4);
-  const end = new Date(ovulation); end.setDate(end.getDate() + 1);
-  return [start.toISOString().slice(0,10), end.toISOString().slice(0,10)];
-}
+        // Check for sexual activity
+        const sexRecord = sexRecords.find(record => record.date === dateStr);
+        if (sexRecord) {
+          classes += ' border-2 border-purple-500';
+          details += `Sexual Activity: Protection - ${sexRecord.protection}, Ejaculation - ${sexRecord.ejaculation}<br>`;
+        }
 
-function updateNextPeriod() {
-  if (!periods.length) return;
-  const last = periods[periods.length - 1];
-  const start = new Date(last.start);
-  const end = new Date(last.end);
-  const duration = (end - start)/(1000*60*60*24);
-  const next = new Date(start.getTime() + (28 + duration) * 86400000);
-  document.getElementById("nextPeriod").innerHTML =
-    "预计下次月经：" + next.toISOString().slice(0,10);
-}
+        // Estimate ovulation and fertile window
+        const cycleDay = (day % cycleLength) || cycleLength;
+        let pregnancyRisk = 0;
+        if (cycleDay >= ovulationDay - fertileWindow && cycleDay <= ovulationDay + fertileWindow) {
+          classes += ' bg-yellow-100';
+          pregnancyRisk = cycleDay === ovulationDay ? 30 : cycleDay === ovulationDay - 1 || cycleDay === ovulationDay + 1 ? 20 : 10;
+          details += `Fertile Window: ~${pregnancyRisk}% pregnancy risk<br>`;
+          if (cycleDay === ovulationDay) {
+            classes += ' ring-2 ring-pink-500';
+            details += 'Ovulation Day<br>';
+          }
+        }
 
-function updateStats() {
-  const month = new Date().toISOString().slice(0,7);
-  const list = loves.filter(l => l.date.startsWith(month));
-  const inner = list.filter(l => l.ejaculation === "内射").length;
-  const outer = list.filter(l => l.ejaculation === "体外").length;
-  const none = list.filter(l => l.ejaculation === "无射").length;
-  document.getElementById("loveStats").innerHTML = `
-    总次数：${list.length}<br>内射：${inner} 次<br>体外：${outer} 次<br>无射：${none} 次
-  `;
-}
-
-function renderChart() {
-  const ctx = document.getElementById("chart").getContext("2d");
-  const month = new Date().toISOString().slice(0,7);
-  const list = loves.filter(l => l.date.startsWith(month));
-  const inner = list.filter(l => l.ejaculation === "内射").length;
-  const outer = list.filter(l => l.ejaculation === "体外").length;
-  const none = list.filter(l => l.ejaculation === "无射").length;
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["内射", "体外", "无射"],
-      datasets: [{
-        data: [inner, outer, none],
-        backgroundColor: ["#ff6f61", "#ffd666", "#69c0ff"]
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+        calendarGrid.innerHTML += `
+          <div class="${classes}" data-date="${dateStr}" data-details="${details}">
+            ${day}
+          </div>
+        `;
+      }
     }
-  });
-}
 
-function renderCalendar() {
-  const events = [];
-  periods.forEach(p => {
-    events.push({ title: "🩸 月经", start: p.start, end: p.end, color: "#ff85a2" });
-    const [s, e] = getOvulation(p.start);
-    events.push({ title: "⚠️ 危险期", start: s, end: e, color: "#fff566" });
-  });
-  loves.forEach(l => {
-    events.push({ title: "💗 爱爱", start: l.date, color: "#b37feb" });
-  });
+    // Modal logic
+    function showModal(date, details) {
+      const modal = document.getElementById('day-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalDetails = document.getElementById('modal-details');
+      modalTitle.textContent = `Details for ${date}`;
+      modalDetails.innerHTML = details || 'No events recorded.';
+      modal.classList.remove('hidden');
+    }
 
-  const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-    initialView: "dayGridMonth",
-    locale: "zh-cn",
-    headerToolbar: { start: "title", end: "prev,next" },
-    events
-  });
-  calendar.render();
-}
-</script>
+    document.getElementById('close-modal').addEventListener('click', () => {
+      document.getElementById('day-modal').classList.add('hidden');
+    });
 
+    document.getElementById('calendar-grid').addEventListener('click', (e) => {
+      const day = e.target.closest('.calendar-day');
+      if (day) {
+        const date = day.dataset.date;
+        const details = day.dataset.details;
+        showModal(date, details);
+      }
+    });
+
+    // Navigation
+    document.getElementById('prev-month').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById('next-month').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    // Form submissions
+    document.getElementById('period-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const date = document.getElementById('period-date').value;
+      if (date && !periods.includes(date)) {
+        periods.push(date);
+        localStorage.setItem('periods', JSON.stringify(periods));
+        renderCalendar();
+        renderChart();
+      }
+    });
+
+    document.getElementById('sex-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const date = document.getElementById('sex-date').value;
+      const protection = document.querySelector('input[name="protection"]:checked')?.value;
+      const ejaculation = document.querySelector('input[name="ejaculation"]:checked')?.value;
+      if (date && protection && ejaculation) {
+        sexRecords.push({ date, protection, ejaculation });
+        localStorage.setItem('sexRecords', JSON.stringify(sexRecords));
+        renderCalendar();
+        renderChart();
+      }
+    });
+
+    // Chart rendering
+    let chartInstance = null;
+    function renderChart() {
+      const ctx = document.getElementById('cycle-chart').getContext('2d');
+      const labels = [];
+      const periodData = [];
+      const sexData = [];
+
+      // Generate data for the last 3 months
+      for (let i = 60; i >= 0; i--) {
+        const date = dateFns.subDays(new Date(), i);
+        const dateStr = dateFns.format(date, 'yyyy-MM-dd');
+        labels.push(dateFns.format(date, 'MMM dd'));
+        periodData.push(periods.includes(dateStr) ? 1 : 0);
+        sexData.push(sexRecords.some(record => record.date === dateStr) ? 1 : 0);
+      }
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Period Days',
+              data: periodData,
+              backgroundColor: 'rgba(239, 68, 68, 0.5)',
+            },
+            {
+              label: 'Sexual Activity',
+              data: sexData,
+              backgroundColor: 'rgba(147, 51, 234, 0.5)',
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, max: 1, ticks: { stepSize: 1 } },
+          },
+        },
+      });
+    }
+
+    // Initialize
+    renderCalendar();
+    renderChart();
+  </script>
 </body>
 </html>

@@ -41,7 +41,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>YanZi’s Cycle Sanctuary</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0"></script>
@@ -50,11 +50,13 @@
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      -webkit-tap-highlight-color: transparent;
     }
     .calendar-day {
       transition: all 0.2s ease-in-out;
+      touch-action: manipulation;
     }
-    .calendar-day:hover {
+    .calendar-day:hover, .calendar-day:active {
       transform: scale(1.05);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -67,19 +69,40 @@
       display: inline-block;
       vertical-align: middle;
     }
+    .toast {
+      animation: slideIn 0.3s ease-out, fadeOut 3s 2s ease-in forwards;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; }
+    }
+    .btn-save {
+      transition: transform 0.2s ease;
+    }
+    .btn-save:active {
+      transform: scale(0.95);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg hidden toast">
+    <span id="toast-message"></span>
+  </div>
+
   <!-- Header -->
   <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-6 px-4 shadow-lg">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 class="text-3xl font-bold flex items-center">
+      <h1 class="text-2xl sm:text-3xl font-bold flex items-center">
         <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104-.896-2-2-2s-2 .896-2 2 2 4 2 4 2-2.896 2-4zm0 0c0 1.104.896 2 2 2s2-.896 2-2-2-4-2-4-2 2.896-2 4zm-6 7v2h12v-2H6z"></path></svg>
         YanZi’s Cycle Sanctuary
       </h1>
-      <nav>
-        <a href="#calendar" class="px-4 hover:underline">Calendar</a>
-        <a href="#charts" class="px-4 hover:underline">Analysis</a>
+      <nav class="flex space-x-4">
+        <a href="#calendar" class="text-sm sm:text-base hover:underline">Calendar</a>
+        <a href="#charts" class="text-sm sm:text-base hover:underline">Analysis</a>
       </nav>
     </div>
   </header>
@@ -88,7 +111,7 @@
   <main class="max-w-7xl mx-auto py-8 px-4 flex-grow">
     <!-- Period Tracking Section -->
     <section class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
         Period Tracking
       </h2>
@@ -98,14 +121,14 @@
             <label for="period-date" class="block text-sm font-medium text-gray-700">Period Start Date</label>
             <input type="date" id="period-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
           </div>
-          <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Add Period</button>
+          <button type="submit" class="btn-save bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Add Period</button>
         </form>
       </div>
     </section>
 
     <!-- Sexual Activity Tracking Section -->
     <section class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
         Sexual Activity
       </h2>
@@ -130,26 +153,26 @@
               <label><input type="radio" name="ejaculation" value="none" class="mr-1">None</label>
             </div>
           </div>
-          <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition">Add Record</button>
+          <button type="submit" class="btn-save bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition">Add Record</button>
         </form>
       </div>
     </section>
 
     <!-- Calendar Section -->
     <section id="calendar" class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
         Cycle Calendar
       </h2>
       <div class="bg-white p-6 rounded-lg shadow-md">
         <div class="flex justify-between mb-4">
           <button id="prev-month" class="text-pink-500 hover:text-pink-600">← Previous</button>
-          <h3 id="month-year" class="text-lg font-semibold"></h3>
+          <h3 id="month-year" class="text-base sm:text-lg font-semibold"></h3>
           <button id="next-month" class="text-pink-500 hover:text-pink-600">Next →</button>
         </div>
         <div class="flex justify-end mb-4 space-x-2">
-          <button id="reset-month" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Reset This Month</button>
-          <button id="reset-all" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Reset All Data</button>
+          <button id="reset-month" class="btn-save bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Reset This Month</button>
+          <button id="reset-all" class="btn-save bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Reset All Data</button>
         </div>
         <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center"></div>
       </div>
@@ -157,11 +180,11 @@
 
     <!-- Chart Section -->
     <section id="charts" class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="icon mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h3m0 0v6m0-6H6m6 0h3m-3 6h3m-9 3h12a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
         Cycle Analysis
       </h2>
-      <div class="bg-white p-6 rounded-lg shadow-md">
+      <div class="bg-white p-6 rounded-lg shadow Zimmerman-md">
         <canvas id="cycle-chart" class="w-full"></canvas>
       </div>
     </section>
@@ -179,12 +202,12 @@
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
       <h3 id="modal-title" class="text-lg font-semibold mb-4"></h3>
       <p id="modal-details" class="text-sm text-gray-600"></p>
-      <button id="close-modal" class="mt-4 bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Close</button>
+      <button id="close-modal" class="mt-4 btn-save bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Close</button>
     </div>
   </div>
 
   <script>
-    // Data storage (in-memory fallback if localStorage is unavailable)
+    // Data storage
     let periods = [];
     let sexRecords = [];
     let storageAvailable = true;
@@ -199,7 +222,7 @@
     } catch (e) {
       storageAvailable = false;
       console.warn('localStorage is not available. Using in-memory storage.');
-      alert('Warning: Local storage is disabled. Data will not persist after page refresh.');
+      showToast('Warning: Data will not persist after page refresh due to storage limitations.', 'bg-yellow-500');
     }
 
     // Save data to storage
@@ -211,25 +234,37 @@
           console.log('Data saved to localStorage:', { periods, sexRecords });
         } catch (e) {
           console.error('Failed to save to localStorage:', e);
-          alert('Error: Failed to save data. Please check browser settings.');
+          showToast('Error: Failed to save data. Check browser settings.', 'bg-red-500');
         }
       }
     }
 
-    // Calculate cycle details based on latest period
+    // Toast notification
+    function showToast(message, bgColor = 'bg-green-500') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      toastMessage.textContent = message;
+      toast.className = `fixed bottom-4 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded-md shadow-lg ${bgColor} toast`;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Calculate cycle details
     function getCycleDetails(date) {
       const latestPeriod = periods
         .map(d => new Date(d))
         .filter(d => d <= new Date(date))
         .sort((a, b) => b - a)[0];
 
-      if (!latestPeriod) {
-        return { cycleDay: null, pregnancyRisk: 0, isOvulation: false, isFertile: false };
-      }
-
       const cycleLength = 28; // Default cycle length
       const ovulationDay = 14; // Approx ovulation day
       const fertileWindow = 5; // Days around ovulation
+
+      if (!latestPeriod) {
+        return { cycleDay: (new Date(date).getDate() % cycleLength) || cycleLength, pregnancyRisk: 0, isOvulation: false, isFertile: false };
+      }
 
       const daysSincePeriod = Math.floor((new Date(date) - latestPeriod) / (1000 * 60 * 60 * 24));
       const cycleDay = (daysSincePeriod % cycleLength) || cycleLength;
@@ -263,42 +298,37 @@
 
       const calendarGrid = document.getElementById('calendar-grid');
       calendarGrid.innerHTML = `
-        <div class="font-semibold text-gray-600">Sun</div>
-        <div class="font-semibold text-gray-600">Mon</div>
-        <div class="font-semibold text-gray-600">Tue</div>
-        <div class="font-semibold text-gray-600">Wed</div>
-        <div class="font-semibold text-gray-600">Thu</div>
-        <div class="font-semibold text-gray-600">Fri</div>
-        <div class="font-semibold text-gray-600">Sat</div>
+        <div class="font-semibold text-gray-600 text-sm">Sun</div>
+        <div class="font-semibold text-gray-600 text-sm">Mon</div>
+        <div class="font-semibold text-gray-600 text-sm">Tue</div>
+        <div class="font-semibold text-gray-600 text-sm">Wed</div>
+        <div class="font-semibold text-gray-600 text-sm">Thu</div>
+        <div class="font-semibold text-gray-600 text-sm">Fri</div>
+        <div class="font-semibold text-gray-600 text-sm">Sat</div>
       `;
 
-      // Add empty slots for days before the first day
       for (let i = 0; i < startDay; i++) {
         calendarGrid.innerHTML += `<div></div>`;
       }
 
-      // Add days
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(currentYear, currentMonth, day);
         const dateStr = dateFns.format(date, 'yyyy-MM-dd');
-        let classes = 'calendar-day p-2 rounded-full text-center cursor-pointer';
+        let classes = 'calendar-day p-2 rounded-full text-center cursor-pointer text-sm';
         let details = '';
 
-        // Check for period
         const isPeriod = periods.includes(dateStr);
         if (isPeriod) {
           classes += ' bg-red-200';
           details += 'Period<br>';
         }
 
-        // Check for sexual activity
         const sexRecord = sexRecords.find(record => record.date === dateStr);
         if (sexRecord) {
           classes += ' border-2 border-purple-500';
           details += `Sexual Activity: Protection - ${sexRecord.protection}, Ejaculation - ${sexRecord.ejaculation}<br>`;
         }
 
-        // Calculate ovulation and fertile window
         const { pregnancyRisk, isOvulation, isFertile } = getCycleDetails(dateStr);
         if (isFertile) {
           classes += ' bg-yellow-100';
@@ -369,11 +399,11 @@
         saveData();
         renderCalendar();
         renderChart();
-        alert('Period recorded successfully.');
+        showToast('Period recorded successfully.');
       } else if (periods.includes(date)) {
-        alert('Period already recorded for this date.');
+        showToast('Period already recorded for this date.', 'bg-red-500');
       } else {
-        alert('Please select a valid date.');
+        showToast('Please select a valid date.', 'bg-red-500');
       }
     });
 
@@ -388,9 +418,9 @@
         saveData();
         renderCalendar();
         renderChart();
-        alert('Sexual activity recorded successfully.');
+        showToast('Sexual activity recorded successfully.');
       } else {
-        alert('Please fill out all fields.');
+        showToast('Please fill out all fields.', 'bg-red-500');
       }
     });
 
@@ -403,7 +433,7 @@
         saveData();
         renderCalendar();
         renderChart();
-        alert('Data for this month has been reset.');
+        showToast('Data for this month has been reset.', 'bg-blue-500');
       }
     });
 
@@ -414,7 +444,7 @@
         saveData();
         renderCalendar();
         renderChart();
-        alert('All data has been reset.');
+        showToast('All data has been reset.', 'bg-blue-500');
       }
     });
 
@@ -426,7 +456,6 @@
       const periodData = [];
       const sexData = [];
 
-      // Generate data for the last 3 months
       for (let i = 60; i >= 0; i--) {
         const date = dateFns.subDays(new Date(), i);
         const dateStr = dateFns.format(date, 'yyyy-MM-dd');

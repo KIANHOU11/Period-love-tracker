@@ -96,7 +96,7 @@
         <form id="period-form" class="space-y-4">
           <div>
             <label for="period-date" class="block text-sm font-medium text-gray-700">Period Start Date</label>
-            <input type="date" id="period-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
+            <input type="date" id="period-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
           </div>
           <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition">Add Period</button>
         </form>
@@ -113,19 +113,19 @@
         <form id="sex-form" class="space-y-4">
           <div>
             <label for="sex-date" class="block text-sm font-medium text-gray-700">Date</label>
-            <input type="date" id="sex-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
+            <input type="date" id="sex-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-pink-500 focus:border-pink-500">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Protection Used</label>
             <div class="mt-2 space-x-4">
-              <label><input type="radio" name="protection" value="yes" class="mr-1">Yes</label>
+              <label><input type="radio" name="protection" value="yes" class="mr-1" required>Yes</label>
               <label><input type="radio" name="protection" value="no" class="mr-1">No</label>
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Ejaculation Type</label>
             <div class="mt-2 space-x-4">
-              <label><input type="radio" name="ejaculation" value="inside" class="mr-1">Inside</label>
+              <label><input type="radio" name="ejaculation" value="inside" class="mr-1" required>Inside</label>
               <label><input type="radio" name="ejaculation" value="outside" class="mr-1">Outside</label>
               <label><input type="radio" name="ejaculation" value="none" class="mr-1">None</label>
             </div>
@@ -146,6 +146,10 @@
           <button id="prev-month" class="text-pink-500 hover:text-pink-600">← Previous</button>
           <h3 id="month-year" class="text-lg font-semibold"></h3>
           <button id="next-month" class="text-pink-500 hover:text-pink-600">Next →</button>
+        </div>
+        <div class="flex justify-end mb-4 space-x-2">
+          <button id="reset-month" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Reset This Month</button>
+          <button id="reset-all" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Reset All Data</button>
         </div>
         <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center"></div>
       </div>
@@ -180,12 +184,69 @@
   </div>
 
   <script>
-    // Data storage (simulated local storage)
-    let periods = JSON.parse(localStorage.getItem('periods')) || [];
-    let sexRecords = JSON.parse(localStorage.getItem('sexRecords')) || [];
-    const cycleLength = 28; // Average cycle length
-    const ovulationDay = 14; // Approx ovulation day
-    const fertileWindow = 5; // Days around ovulation
+    // Data storage (in-memory fallback if localStorage is unavailable)
+    let periods = [];
+    let sexRecords = [];
+    let storageAvailable = true;
+
+    // Check localStorage availability
+    try {
+      const testKey = '__test__';
+      localStorage.setItem(testKey, testKey);
+      localStorage.removeItem(testKey);
+      periods = JSON.parse(localStorage.getItem('periods')) || [];
+      sexRecords = JSON.parse(localStorage.getItem('sexRecords')) || [];
+    } catch (e) {
+      storageAvailable = false;
+      console.warn('localStorage is not available. Using in-memory storage.');
+      alert('Warning: Local storage is disabled. Data will not persist after page refresh.');
+    }
+
+    // Save data to storage
+    function saveData() {
+      if (storageAvailable) {
+        try {
+          localStorage.setItem('periods', JSON.stringify(periods));
+          localStorage.setItem('sexRecords', JSON.stringify(sexRecords));
+          console.log('Data saved to localStorage:', { periods, sexRecords });
+        } catch (e) {
+          console.error('Failed to save to localStorage:', e);
+          alert('Error: Failed to save data. Please check browser settings.');
+        }
+      }
+    }
+
+    // Calculate cycle details based on latest period
+    function getCycleDetails(date) {
+      const latestPeriod = periods
+        .map(d => new Date(d))
+        .filter(d => d <= new Date(date))
+        .sort((a, b) => b - a)[0];
+
+      if (!latestPeriod) {
+        return { cycleDay: null, pregnancyRisk: 0, isOvulation: false, isFertile: false };
+      }
+
+      const cycleLength = 28; // Default cycle length
+      const ovulationDay = 14; // Approx ovulation day
+      const fertileWindow = 5; // Days around ovulation
+
+      const daysSincePeriod = Math.floor((new Date(date) - latestPeriod) / (1000 * 60 * 60 * 24));
+      const cycleDay = (daysSincePeriod % cycleLength) || cycleLength;
+      let pregnancyRisk = 0;
+      let isOvulation = false;
+      let isFertile = false;
+
+      if (cycleDay >= ovulationDay - fertileWindow && cycleDay <= ovulationDay + fertileWindow) {
+        isFertile = true;
+        pregnancyRisk = cycleDay === ovulationDay ? 30 : (cycleDay === ovulationDay - 1 || cycleDay === ovulationDay + 1) ? 20 : 10;
+        if (cycleDay === ovulationDay) {
+          isOvulation = true;
+        }
+      }
+
+      return { cycleDay, pregnancyRisk, isOvulation, isFertile };
+    }
 
     // Calendar logic
     const today = new Date();
@@ -237,14 +298,12 @@
           details += `Sexual Activity: Protection - ${sexRecord.protection}, Ejaculation - ${sexRecord.ejaculation}<br>`;
         }
 
-        // Estimate ovulation and fertile window
-        const cycleDay = (day % cycleLength) || cycleLength;
-        let pregnancyRisk = 0;
-        if (cycleDay >= ovulationDay - fertileWindow && cycleDay <= ovulationDay + fertileWindow) {
+        // Calculate ovulation and fertile window
+        const { pregnancyRisk, isOvulation, isFertile } = getCycleDetails(dateStr);
+        if (isFertile) {
           classes += ' bg-yellow-100';
-          pregnancyRisk = cycleDay === ovulationDay ? 30 : cycleDay === ovulationDay - 1 || cycleDay === ovulationDay + 1 ? 20 : 10;
           details += `Fertile Window: ~${pregnancyRisk}% pregnancy risk<br>`;
-          if (cycleDay === ovulationDay) {
+          if (isOvulation) {
             classes += ' ring-2 ring-pink-500';
             details += 'Ovulation Day<br>';
           }
@@ -306,9 +365,15 @@
       const date = document.getElementById('period-date').value;
       if (date && !periods.includes(date)) {
         periods.push(date);
-        localStorage.setItem('periods', JSON.stringify(periods));
+        periods.sort();
+        saveData();
         renderCalendar();
         renderChart();
+        alert('Period recorded successfully.');
+      } else if (periods.includes(date)) {
+        alert('Period already recorded for this date.');
+      } else {
+        alert('Please select a valid date.');
       }
     });
 
@@ -319,9 +384,37 @@
       const ejaculation = document.querySelector('input[name="ejaculation"]:checked')?.value;
       if (date && protection && ejaculation) {
         sexRecords.push({ date, protection, ejaculation });
-        localStorage.setItem('sexRecords', JSON.stringify(sexRecords));
+        sexRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
+        saveData();
         renderCalendar();
         renderChart();
+        alert('Sexual activity recorded successfully.');
+      } else {
+        alert('Please fill out all fields.');
+      }
+    });
+
+    // Reset buttons
+    document.getElementById('reset-month').addEventListener('click', () => {
+      if (confirm(`Are you sure you want to reset all data for ${dateFns.format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}?`)) {
+        const monthStr = dateFns.format(new Date(currentYear, currentMonth, 1), 'yyyy-MM');
+        periods = periods.filter(date => !date.startsWith(monthStr));
+        sexRecords = sexRecords.filter(record => !record.date.startsWith(monthStr));
+        saveData();
+        renderCalendar();
+        renderChart();
+        alert('Data for this month has been reset.');
+      }
+    });
+
+    document.getElementById('reset-all').addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset ALL data? This cannot be undone.')) {
+        periods = [];
+        sexRecords = [];
+        saveData();
+        renderCalendar();
+        renderChart();
+        alert('All data has been reset.');
       }
     });
 

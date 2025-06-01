@@ -1,13 +1,202 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>周期守护助手</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Helvetica Neue", "PingFang SC", sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #ffe4ec, #fff0f5);
+    }
+    .container {
+      max-width: 440px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h1 { color: #e75480; text-align: center; }
+    input, select, button {
+      width: 100%; padding: 12px; margin-top: 10px;
+      font-size: 16px; border-radius: 10px; border: 1px solid #ccc;
+    }
+    button { background: #e75480; color: white; border: none; }
+    .card {
+      background: #fff0f5;
+      padding: 10px;
+      border-left: 5px solid #e75480;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    canvas { margin-top: 16px; max-height: 220px; width: 100%; }
+  </style>
 </head>
 <body>
-  <h1>✅ 周期守护助手 页面正常加载</h1>
-  <p>说明：此页面包含密码记住机制、插画日历、图表、UI 优化，适配 iPhone Safari 浏览器。</p>
+
+<div id="login" class="container" style="display:none;">
+  <h1>🔐 周期守护助手</h1>
+  <input type="password" id="passwordInput" placeholder="请输入密码">
+  <button onclick="checkPassword()">进入</button>
+  <div id="loginError" style="color:red; text-align:center; margin-top: 10px;"></div>
+</div>
+
+<div id="app" class="container" style="display:none;">
+  <h1>周期记录</h1>
+  <h3>🩸 月经记录</h3>
+  <input type="date" id="periodStart">
+  <input type="date" id="periodEnd">
+  <button onclick="addPeriod()">添加记录</button>
+  <div id="nextPeriod" class="card"></div>
+
+  <h3>🍑 爱爱记录</h3>
+  <select id="withCondom">
+    <option>是</option><option>否</option>
+  </select>
+  <select id="ejaculation">
+    <option>内射</option><option>体外</option><option>无射</option>
+  </select>
+  <button onclick="addLove()">添加爱爱记录</button>
+
+  <h3>📅 插画日历</h3>
+  <div id="calendar"></div>
+
+  <h3>📊 图表分析</h3>
+  <div id="loveStats" class="card"></div>
+  <canvas id="chart"></canvas>
+</div>
+
+<script>
+const PASSWORD = "1234";
+
+if (localStorage.getItem("unlocked") === "yes") {
+  showApp();
+} else {
+  document.getElementById("login").style.display = "block";
+}
+
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  if (input === PASSWORD) {
+    localStorage.setItem("unlocked", "yes");
+    showApp();
+  } else {
+    document.getElementById("loginError").innerText = "密码错误，请重试";
+  }
+}
+
+function showApp() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  renderApp();
+}
+
+function renderApp() {
+  updateNextPeriod();
+  updateStats();
+  renderChart();
+  renderCalendar();
+}
+
+const periods = JSON.parse(localStorage.getItem("periods") || "[]");
+const loves = JSON.parse(localStorage.getItem("loves") || "[]");
+
+function addPeriod() {
+  const start = document.getElementById("periodStart").value;
+  const end = document.getElementById("periodEnd").value;
+  if (!start || !end || end < start) return alert("日期无效");
+  periods.push({ start, end });
+  localStorage.setItem("periods", JSON.stringify(periods));
+  location.reload();
+}
+
+function addLove() {
+  const date = new Date().toISOString().slice(0,10);
+  const withCondom = document.getElementById("withCondom").value;
+  const ejaculation = document.getElementById("ejaculation").value;
+  loves.push({ date, withCondom, ejaculation });
+  localStorage.setItem("loves", JSON.stringify(loves));
+  location.reload();
+}
+
+function getOvulation(startDate) {
+  const ovulation = new Date(startDate);
+  ovulation.setDate(ovulation.getDate() + 14);
+  const start = new Date(ovulation); start.setDate(start.getDate() - 4);
+  const end = new Date(ovulation); end.setDate(end.getDate() + 1);
+  return [start.toISOString().slice(0,10), end.toISOString().slice(0,10)];
+}
+
+function updateNextPeriod() {
+  if (!periods.length) return;
+  const last = periods[periods.length - 1];
+  const start = new Date(last.start);
+  const end = new Date(last.end);
+  const duration = (end - start)/(1000*60*60*24);
+  const next = new Date(start.getTime() + (28 + duration) * 86400000);
+  document.getElementById("nextPeriod").innerHTML =
+    "预计下次月经：" + next.toISOString().slice(0,10);
+}
+
+function updateStats() {
+  const month = new Date().toISOString().slice(0,7);
+  const list = loves.filter(l => l.date.startsWith(month));
+  const inner = list.filter(l => l.ejaculation === "内射").length;
+  const outer = list.filter(l => l.ejaculation === "体外").length;
+  const none = list.filter(l => l.ejaculation === "无射").length;
+  document.getElementById("loveStats").innerHTML = `
+    总次数：${list.length}<br>内射：${inner} 次<br>体外：${outer} 次<br>无射：${none} 次
+  `;
+}
+
+function renderChart() {
+  const ctx = document.getElementById("chart").getContext("2d");
+  const month = new Date().toISOString().slice(0,7);
+  const list = loves.filter(l => l.date.startsWith(month));
+  const inner = list.filter(l => l.ejaculation === "内射").length;
+  const outer = list.filter(l => l.ejaculation === "体外").length;
+  const none = list.filter(l => l.ejaculation === "无射").length;
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["内射", "体外", "无射"],
+      datasets: [{
+        data: [inner, outer, none],
+        backgroundColor: ["#ff6f61", "#ffd666", "#69c0ff"]
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+function renderCalendar() {
+  const events = [];
+  periods.forEach(p => {
+    events.push({ title: "🩸 月经", start: p.start, end: p.end, color: "#ff85a2" });
+    const [s, e] = getOvulation(p.start);
+    events.push({ title: "⚠️ 危险期", start: s, end: e, color: "#fff566" });
+  });
+  loves.forEach(l => {
+    events.push({ title: "💗 爱爱", start: l.date, color: "#b37feb" });
+  });
+
+  const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+    initialView: "dayGridMonth",
+    locale: "zh-cn",
+    headerToolbar: { start: "title", end: "prev,next" },
+    events
+  });
+  calendar.render();
+}
+</script>
+
 </body>
 </html>
